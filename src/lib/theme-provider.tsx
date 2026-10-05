@@ -32,20 +32,22 @@ const Ctx = createContext<{
 }>({ theme: "dark", setTheme: () => undefined, resolvedTheme: "dark" });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Lazy init reads storage on first client render. Safe for hydration:
-  // no DOM output depends on theme before effects run (toggles render
-  // placeholders pre-mount; the class is applied to documentElement only).
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "dark";
+  // Always initialize to "dark" — matches the server render exactly, no hydration mismatch.
+  // Read the real stored preference after mount in a useEffect.
+  const [theme, setThemeState] = useState<Theme>("dark");
+  const [resolvedTheme, setResolvedTheme] = useState<Resolved>("dark");
+
+  // On first mount, read the stored theme and apply it.
+  useEffect(() => {
     try {
       const s = window.localStorage.getItem(KEY);
-      if (s === "light" || s === "dark" || s === "system") return s;
+      if (s === "light" || s === "dark" || s === "system") {
+        setThemeState(s);
+      }
     } catch {
       /* storage blocked — stay dark */
     }
-    return "dark";
-  });
-  const [resolvedTheme, setResolvedTheme] = useState<Resolved>("dark");
+  }, []);
 
   // Syncs the external system (document class + storage) with React state.
   useEffect(() => {
