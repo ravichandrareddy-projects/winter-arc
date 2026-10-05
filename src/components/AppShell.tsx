@@ -21,6 +21,7 @@ import { startReminderLoop } from "@/lib/notify";
 import { selectDayCompletion, useWinterArc } from "@/lib/store";
 import { useEffect } from "react";
 import { NotificationToastHub } from "./NotificationToastHub";
+import { AppFooter } from "./AppFooter";
 
 const NAV = [
   { href: "/", label: "Home", icon: House },
@@ -265,7 +266,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* content */}
-      <div className="min-w-0 flex-1 pb-24 lg:pb-0">{children}</div>
+      <div className="min-w-0 flex-1 flex flex-col justify-between pb-24 lg:pb-0">
+        <div className="flex-1">{children}</div>
+        <AppFooter />
+      </div>
 
       {/* mobile bottom tabs */}
       <nav
