@@ -100,33 +100,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     startReminderLoop();
   }, []);
 
-  // default landing tab, once per session (after intro has been seen)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (
-      pathname === "/" &&
-      startTab !== "/" &&
-      window.localStorage.getItem("wa-seen-intro") &&
-      !window.sessionStorage.getItem("wa-landed")
-    ) {
-      window.sessionStorage.setItem("wa-landed", "1");
-      router.replace(startTab);
-    }
-  }, [pathname, startTab, router]);
-
-  // first visit → intro (explore-first; never blocks deep links)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      if (pathname === "/" && !window.localStorage.getItem("wa-seen-intro")) {
-        window.localStorage.setItem("wa-seen-intro", "1");
-        router.replace("/intro");
-      }
-    } catch {
-      /* storage blocked — skip intro */
-    }
-  }, [pathname, router]);
-
   const trackers = useWinterArc((s) => s.trackers);
   const entries = useWinterArc((s) => s.entries);
 
