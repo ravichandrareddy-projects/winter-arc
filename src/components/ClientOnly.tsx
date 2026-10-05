@@ -10,21 +10,5 @@ import { WinterArcWordmark } from "./brand";
  * Right call for a local-first PWA: no SEO content is lost.
  */
 export function ClientOnly({ children }: { children: ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div suppressHydrationWarning className="flex min-h-dvh items-center justify-center bg-background">
-        <div suppressHydrationWarning className="animate-pulse opacity-70">
-          <WinterArcWordmark />
-        </div>
-      </div>
-    );
-  }
   return <>{children}</>;
 }
