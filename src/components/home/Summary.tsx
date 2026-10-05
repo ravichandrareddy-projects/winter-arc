@@ -146,10 +146,9 @@ export function Summary({ date }: { date: string }) {
   const trackers = useWinterArc((s) => s.trackers);
   const entries = useWinterArc((s) => s.entries);
 
-  if (!trackers.some((t) => t.status === "active")) return null;
-
+  const hasActive = trackers.some((t) => t.status === "active");
   const visible = selectTrackersForDate(trackers, date);
-  const completion = selectDayCompletion(trackers, entries, date);
+  const completion = hasActive ? selectDayCompletion(trackers, entries, date) : { done: 0, total: 0, pct: 0 };
   const sparkTrackers = visible
     .filter((t) => t.type !== "time" && t.type !== "boolean")
     .slice(0, 5);
@@ -162,9 +161,22 @@ export function Summary({ date }: { date: string }) {
         Today&apos;s Summary
       </h2>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
-        {sparkTrackers.map((t) => (
-          <SummaryCard key={t.id} tracker={t} date={date} />
-        ))}
+        {sparkTrackers.length > 0 ? (
+          sparkTrackers.map((t) => (
+            <SummaryCard key={t.id} tracker={t} date={date} />
+          ))
+        ) : (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex min-h-[140px] flex-col justify-between rounded-2xl border-2 border-dashed border-border/60 bg-card/40 p-4">
+              <div className="flex items-center gap-2">
+                <span className="h-4 w-4 rounded-full border border-dashed border-border" />
+                <p className="text-xs font-semibold text-muted">Summary Box {i + 1}</p>
+              </div>
+              <p className="py-2 text-sm text-muted/70">No activity logged</p>
+              <div className="h-1.5 w-full rounded-full bg-track" />
+            </div>
+          ))
+        )}
       </div>
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_280px]">
         <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-4">

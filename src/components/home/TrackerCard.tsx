@@ -134,7 +134,7 @@ export function TrackerCard({
   // ---- boolean: completed card vs mark-done card ----
   if (tracker.type === "boolean") {
     return (
-      <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3.5">
+      <div className="flex min-h-[175px] flex-col justify-between gap-2.5 rounded-2xl border border-border bg-card p-3.5">
         {head}
         {done ? (
           <>
@@ -181,7 +181,7 @@ export function TrackerCard({
   if (tracker.type === "time") {
     const val = dayEntries[0]?.value;
     return (
-      <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3.5">
+      <div className="flex min-h-[175px] flex-col justify-between gap-2.5 rounded-2xl border border-border bg-card p-3.5">
         {head}
         <p className="py-1 text-center text-xl font-extrabold">
           {typeof val === "string" && val ? formatTime12(val) : "--:--"}
@@ -231,7 +231,7 @@ export function TrackerCard({
     const target = tracker.target ?? 4;
     const segs = Math.min(target, 8);
     return (
-      <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3.5">
+      <div className="flex min-h-[175px] flex-col justify-between gap-2.5 rounded-2xl border border-border bg-card p-3.5">
         {head}
         <p className="text-center text-sm">
           <span className="text-base font-extrabold">{formatNumber(total)}</span>
@@ -282,7 +282,7 @@ export function TrackerCard({
     </p>
   );
   return (
-    <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3.5">
+    <div className="flex min-h-[175px] flex-col justify-between gap-2.5 rounded-2xl border border-border bg-card p-3.5">
       {head}
       {big}
       <Bar pct={pct} color={tracker.color} />
@@ -300,11 +300,17 @@ export function TrackerCard({
         }
         label={tracker.name}
       />
-      {done && (
-        <p className="flex items-center gap-1 text-xs font-bold" style={{ color: tracker.color }}>
-          <Check className="h-3.5 w-3.5" /> Completed
-        </p>
-      )}
+      <div className="flex h-4 items-center">
+        {done ? (
+          <p className="flex items-center gap-1 text-xs font-bold" style={{ color: tracker.color }}>
+            <Check className="h-3.5 w-3.5" /> Completed
+          </p>
+        ) : (
+          <span className="text-[11px] text-muted">
+            {total === 0 ? "Empty • Tap + to log" : "In progress"}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

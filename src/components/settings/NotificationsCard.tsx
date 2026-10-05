@@ -32,6 +32,8 @@ export function NotificationsCard() {
       : "denied"
   );
 
+  const [pingStatus, setPingStatus] = useState("");
+
   const enable = async (key: ReminderKey, on: boolean) => {
     if (on && perm === "default") {
       const p = await requestNotifyPermission();
@@ -46,11 +48,11 @@ export function NotificationsCard() {
       title="Notifications"
       sub="Get reminders to stay consistent."
     >
-      <div className="mb-2 flex flex-wrap gap-2">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
         {perm !== "granted" && (
           <button
             onClick={async () => setPerm(await requestNotifyPermission())}
-            className="flex h-10 items-center rounded-full bg-foreground px-4 text-xs font-bold text-background"
+            className="flex h-10 items-center rounded-full bg-foreground px-4 text-xs font-bold text-background transition hover:opacity-90"
           >
             Enable browser notifications
           </button>
@@ -65,11 +67,18 @@ export function NotificationsCard() {
                 /* badge still pinged */
               }
             }
+            setPingStatus("Test ping triggered! Bell badge updated.");
+            setTimeout(() => setPingStatus(""), 3500);
           }}
-          className="flex h-10 items-center rounded-full border border-border px-4 text-xs font-bold"
+          className="flex h-10 items-center rounded-full border border-border px-4 text-xs font-bold transition hover:bg-card-2"
         >
           Send test ping
         </button>
+        {pingStatus && (
+          <span className="text-xs font-semibold text-accent animate-fade-in">
+            {pingStatus}
+          </span>
+        )}
       </div>
       <div className="flex flex-col gap-1">
         {REMINDER_META.map(({ key, label }) => {

@@ -39,7 +39,8 @@ export function GoalsRow() {
     .filter((t) => t.status === "active")
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
-  if (active.length === 0) return null;
+  // If no active goals, render placeholder boxes with empty spaces instead of removing the section
+  const isEmpty = active.length === 0;
 
   return (
     <section aria-label="Your goals">
@@ -57,21 +58,39 @@ export function GoalsRow() {
       </div>
 
       <div className="nice-scroll flex gap-2 overflow-x-auto pb-1">
-        {active.map((t) => (
-          <div
-            key={t.id}
-            className="flex min-w-[150px] flex-1 items-center gap-2.5 rounded-2xl border border-border bg-card px-3 py-2.5"
-          >
-            <TrackerBadge icon={t.icon} color={t.color} size="sm" />
-            <div className="leading-tight">
-              <p className="text-[13px] font-bold">{t.name}</p>
-              <p className="text-[13px] font-bold" style={{ color: t.color }}>
-                {goalLabel(t)}
-                <span className="font-normal text-muted"> </span>
-              </p>
+        {isEmpty ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <button
+              key={i}
+              onClick={openEditor}
+              className="flex min-w-[170px] flex-1 items-center gap-2.5 rounded-2xl border-2 border-dashed border-border/70 bg-card/40 px-3.5 py-3 text-left transition hover:border-accent"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-card-2 text-muted">
+                <Target className="h-4 w-4" />
+              </div>
+              <div className="leading-tight">
+                <p className="text-[13px] font-bold text-muted">Goal Slot {i + 1}</p>
+                <p className="text-xs text-muted/70">Empty • Tap to add</p>
+              </div>
+            </button>
+          ))
+        ) : (
+          active.map((t) => (
+            <div
+              key={t.id}
+              className="flex min-w-[150px] flex-1 items-center gap-2.5 rounded-2xl border border-border bg-card px-3 py-2.5"
+            >
+              <TrackerBadge icon={t.icon} color={t.color} size="sm" />
+              <div className="leading-tight">
+                <p className="text-[13px] font-bold">{t.name}</p>
+                <p className="text-[13px] font-bold" style={{ color: t.color }}>
+                  {goalLabel(t)}
+                  <span className="font-normal text-muted"> </span>
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       <Sheet open={open} onClose={() => setOpen(false)} label="Edit goals">

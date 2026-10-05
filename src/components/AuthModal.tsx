@@ -245,6 +245,21 @@ export function AuthModal() {
                     {busy === "google" ? "Signing you in…" : "Continue with Google"}
                   </button>
 
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try {
+                        window.localStorage.setItem("wa-guest", "1");
+                      } catch {}
+                      const p = takePending();
+                      p?.replay?.();
+                      setAction(null);
+                    }}
+                    className="flex h-11 w-full items-center justify-center rounded-full border border-dashed border-border text-xs font-semibold text-muted hover:text-foreground transition-colors"
+                  >
+                    Continue as Guest (Store on device)
+                  </button>
+
                   <div className="flex items-center gap-3 text-[11px] text-muted">
                     <span className="h-px flex-1 bg-border" /> OR <span className="h-px flex-1 bg-border" />
                   </div>

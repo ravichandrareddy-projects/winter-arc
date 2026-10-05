@@ -85,11 +85,24 @@ export function TodayTrack({ date }: { date: string }) {
 
       {view === "cards" ? (
         visible.length === 0 ? (
-          hasAny ? (
-            <EmptyDay onAdd={openAdd} />
-          ) : (
-            <WelcomeEmpty onAdd={openAdd} />
-          )
+          <div className="flex flex-col gap-4">
+            {hasAny ? <EmptyDay onAdd={openAdd} /> : <WelcomeEmpty onAdd={openAdd} />}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={openAdd}
+                  className="flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border/70 bg-card/40 p-4 text-center transition hover:border-accent"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-card-2 text-muted">
+                    <Plus className="h-5 w-5" />
+                  </div>
+                  <p className="text-xs font-bold text-muted">Empty Tracker Slot {i + 1}</p>
+                  <p className="text-[11px] text-muted/70">Click to place tracker</p>
+                </button>
+              ))}
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {visible.map((t) => (

@@ -80,7 +80,35 @@ export function Timetable({ trackers, date }: { trackers: Tracker[]; date: strin
   const entries = useWinterArc((s) => s.entries);
 
   if (trackers.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted">No trackers scheduled for this date.</p>;
+    return (
+      <div className="nice-scroll overflow-x-auto rounded-2xl border border-border bg-card">
+        <div className="min-w-[860px]" role="grid" aria-label="Timetable">
+          <div className="flex items-center gap-1 border-b border-border px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted">
+            <span className="w-40 shrink-0">Habit / Tracker</span>
+            <span className="w-20 shrink-0">Target</span>
+            {TIME_SLOTS.map((s) => (
+              <span key={s.slot} className="flex-1 text-center">{s.label}</span>
+            ))}
+            <span className="w-36 shrink-0 text-right">Progress</span>
+          </div>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} role="row" className="flex items-center gap-1 border-b border-border/50 px-3 py-2.5 last:border-0 opacity-60">
+              <span className="flex w-40 shrink-0 items-center gap-2">
+                <span className="h-4 w-4 rounded-full border border-dashed border-border" />
+                <span className="text-[13px] font-medium text-muted">Empty Slot {i + 1}</span>
+              </span>
+              <span className="w-20 shrink-0 text-xs text-muted">—</span>
+              {TIME_SLOTS.map((s) => (
+                <div key={s.slot} className="flex h-9 min-w-9 flex-1 items-center justify-center rounded-lg border border-dashed border-border/60 bg-white/[0.02]" />
+              ))}
+              <span className="flex w-36 shrink-0 items-center justify-end gap-2 text-xs text-muted">
+                0%
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
