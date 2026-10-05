@@ -164,7 +164,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         suppressHydrationWarning
         className={`${outfit.variable} ${geistMono.variable} min-h-full bg-background font-sans text-foreground antialiased`}
       >
-        <div aria-hidden="true" className="app-bg" />
+        <div aria-hidden="true" className="app-bg" suppressHydrationWarning />
         <ThemeProvider>
           <AuthProvider>
             <ClientOnly>{children}</ClientOnly>

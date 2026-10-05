@@ -20,7 +20,7 @@ export function ClientOnly({ children }: { children: ReactNode }) {
   if (!mounted) {
     return (
       <div suppressHydrationWarning className="flex min-h-dvh items-center justify-center bg-background">
-        <div className="animate-pulse opacity-70">
+        <div suppressHydrationWarning className="animate-pulse opacity-70">
           <WinterArcWordmark />
         </div>
       </div>
