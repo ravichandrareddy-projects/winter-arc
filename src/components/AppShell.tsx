@@ -17,6 +17,7 @@ import { applyAccent } from "@/lib/accent";
 import { startReminderLoop } from "@/lib/notify";
 import { useWinterArc } from "@/lib/store";
 import { useEffect } from "react";
+import { NotificationToastHub } from "./NotificationToastHub";
 
 const NAV = [
   { href: "/", label: "Home", icon: House },
@@ -188,6 +189,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           />
         ))}
       </nav>
+
+      <NotificationToastHub />
     </div>
   );
 }

@@ -59,9 +59,57 @@ export async function requestNotifyPermission(): Promise<NotificationPermission>
   }
 }
 
+export interface ToastMessage {
+  id: string;
+  title: string;
+  body: string;
+  icon?: "bell" | "flame" | "target" | "check" | "sparkles";
+  color?: string;
+}
+
+const toastListeners = new Set<(t: ToastMessage | null) => void>();
+let activeToast: ToastMessage | null = null;
+let toastTimer: number | null = null;
+
+export function subscribeToast(cb: (t: ToastMessage | null) => void): () => void {
+  toastListeners.add(cb);
+  return () => {
+    toastListeners.delete(cb);
+  };
+}
+
+export function dispatchToast(toast: Omit<ToastMessage, "id"> & { id?: string }): void {
+  const item: ToastMessage = {
+    ...toast,
+    id: toast.id ?? `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+  };
+  activeToast = item;
+  toastListeners.forEach((cb) => cb(activeToast));
+
+  if (typeof window !== "undefined") {
+    if (toastTimer) window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      dismissToast();
+    }, 4000);
+  }
+}
+
+export function dismissToast(): void {
+  activeToast = null;
+  toastListeners.forEach((cb) => cb(null));
+}
+
 function emit(key: ReminderKey, silent = false): void {
   lastFire = { key, at: Date.now() };
   listeners.forEach((cb) => cb());
+  
+  // Also push in-app interactive notification banner
+  dispatchToast({
+    title: COPY[key].title,
+    body: COPY[key].body,
+    icon: key === "workout" ? "flame" : key === "wakeUp" ? "sparkles" : "bell",
+  });
+
   if (!silent && typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
     try {
       new Notification(COPY[key].title, { body: COPY[key].body });

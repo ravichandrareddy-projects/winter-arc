@@ -51,7 +51,7 @@ body {
   color: var(--foreground);
 }
 
-/* Winter Arc mountain backdrop — fixed, full-viewport, theme-veiled for readability */
+/* Winter Arc mountain backdrop & dynamic atmospheric aurora glows */
 .app-bg {
   position: fixed;
   inset: 0;
@@ -59,21 +59,62 @@ body {
   background:
     url("/bg-mountains.png") center top / cover no-repeat,
     var(--background);
+  overflow: hidden;
 }
+
+.app-bg::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background:
+    radial-gradient(ellipse 65% 50% at 20% 0%, rgba(56, 189, 248, 0.14), transparent 70%),
+    radial-gradient(ellipse 55% 45% at 85% 15%, rgba(99, 102, 241, 0.12), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 90%, rgba(46, 155, 255, 0.10), transparent 70%);
+  animation: aurora-drift 16s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.dark .app-bg::before {
+  background:
+    radial-gradient(ellipse 70% 55% at 25% 0%, rgba(56, 189, 248, 0.22), transparent 70%),
+    radial-gradient(ellipse 55% 45% at 80% 20%, rgba(129, 140, 248, 0.16), transparent 65%),
+    radial-gradient(ellipse 65% 55% at 50% 95%, rgba(30, 64, 175, 0.24), transparent 75%);
+}
+
 .app-bg::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    rgba(244, 246, 248, 0.72),
-    rgba(244, 246, 248, 0.94) 70%
+    rgba(244, 246, 248, 0.68),
+    rgba(244, 246, 248, 0.93) 68%
   );
+  backdrop-filter: blur(1.5px);
+  pointer-events: none;
 }
+
 .dark .app-bg::after {
   background: linear-gradient(
-    rgba(11, 15, 20, 0.42),
-    rgba(11, 15, 20, 0.88) 70%
+    rgba(11, 15, 20, 0.38),
+    rgba(11, 15, 20, 0.88) 68%
   );
+  backdrop-filter: blur(1.5px);
+  pointer-events: none;
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: scale(1) translateY(0) rotate(0deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.08) translateY(-12px) rotate(1deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.96) translateY(8px) rotate(-1deg);
+    opacity: 0.85;
+  }
 }
 
 * {

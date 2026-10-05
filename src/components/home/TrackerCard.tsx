@@ -17,6 +17,7 @@ import {
   useWinterArc,
 } from "@/lib/store";
 import type { Tracker } from "@/lib/types";
+import { dispatchToast } from "@/lib/notify";
 
 function Bar({ pct, color }: { pct: number; color: string }) {
   return (
@@ -162,11 +163,16 @@ export function TrackerCard({
             </p>
             <button
               onClick={() =>
-                guard(`Tick ${tracker.name}`, { op: "toggle" }, () =>
-                  toggleBoolean(tracker.id, date)
-                )
+                guard(`Tick ${tracker.name}`, { op: "toggle" }, () => {
+                  toggleBoolean(tracker.id, date);
+                  dispatchToast({
+                    title: `${tracker.name} Completed! 🔥`,
+                    body: "Daily discipline logged. Consistency creates momentum.",
+                    icon: "check",
+                  });
+                })
               }
-              className="flex h-10 items-center justify-center gap-1.5 rounded-xl font-semibold text-white"
+              className="flex h-10 items-center justify-center gap-1.5 rounded-xl font-semibold text-white transition hover:opacity-90 active:scale-95"
               style={{ backgroundColor: tracker.color }}
             >
               <Check className="h-4 w-4" /> Mark Done
@@ -294,9 +300,14 @@ export function TrackerCard({
           )
         }
         onPlus={() =>
-          guard(`Log ${tracker.name}`, { op: "nudge", dir: 1 }, () =>
-            nudge(tracker.id, date, 1)
-          )
+          guard(`Log ${tracker.name}`, { op: "nudge", dir: 1 }, () => {
+            nudge(tracker.id, date, 1);
+            dispatchToast({
+              title: `${tracker.name} Updated ⚡`,
+              body: `Daily progress logged. Keep the momentum high.`,
+              icon: "flame",
+            });
+          })
         }
         label={tracker.name}
       />
