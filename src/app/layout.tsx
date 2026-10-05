@@ -156,6 +156,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="describedby" href={`${CANONICAL_SITE_URL}/llms.txt`} />
         <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(typeof window==='undefined')return;try{var cleanAttr=function(){var els=document.querySelectorAll('[bis_skin_checked]');for(var i=0;i<els.length;i++){els[i].removeAttribute('bis_skin_checked');}};cleanAttr();if(window.MutationObserver){var observer=new MutationObserver(function(mutations){for(var i=0;i<mutations.length;i++){var t=mutations[i].target;if(t&&t.removeAttribute&&t.hasAttribute&&t.hasAttribute('bis_skin_checked')){t.removeAttribute('bis_skin_checked');}}});observer.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['bis_skin_checked']});}var origError=console.error;console.error=function(){var msg='';for(var i=0;i<arguments.length;i++){var a=arguments[i];msg+=' '+(a&&a.message?a.message:String(a));}if(msg.indexOf('bis_skin_checked')!==-1||msg.indexOf('chrome-extension://')!==-1||msg.indexOf('M_ID')!==-1){return;}origError.apply(console,arguments);};window.addEventListener('error',function(e){var src=(e&&e.filename)||'';var msg=(e&&e.message)||'';if(src.indexOf('chrome-extension://')!==-1||msg.indexOf('bis_skin_checked')!==-1||msg.indexOf('M_ID')!==-1){if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(e.preventDefault)e.preventDefault();}},true);window.addEventListener('unhandledrejection',function(e){var reason=e&&e.reason;var msg=reason&&(reason.message||reason.stack||String(reason))||'';if(msg.indexOf('chrome-extension://')!==-1||msg.indexOf('M_ID')!==-1||msg.indexOf('bis_skin_checked')!==-1){if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(e.preventDefault)e.preventDefault();}},true);}catch(err){}})();`,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
