@@ -1,26 +1,41 @@
 {
   "name": "winterarc",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "video:audio": "python3 scripts/generate-video-audio.py",
+    "video:render": "npm run video:audio && python3 scripts/render-video.py",
+    "video:remotion": "npm run video:audio && remotion render video/index.ts WinterArcAdLandscape public/winter-arc-ad-remotion.mp4 --codec=h264 --crf=18",
+    "video:preview": "remotion studio video/index.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
+    "date-fns": "^4.4.0",
+    "lucide-react": "^1.49.0",
     "next": "16.3.8",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.532",
+    "@remotion/renderer": "^4.0.532",
+    "@serwist/next": "^9.5.12",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
+    "puppeteer-core": "^25.12.0",
+    "remotion": "^4.0.532",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "zod": "^4.5.4"
   }
 }

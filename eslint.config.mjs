@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Serwist writes the bundled service worker to public during the build.
+    "public/sw.js",
   ]),
 ]);
 
