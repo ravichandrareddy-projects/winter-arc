@@ -71,19 +71,36 @@ export function DataCard() {
     setTimeout(() => setMsg(""), 4000);
   };
 
+function sanitizeCSVField(val: unknown): string {
+  let str = String(val ?? "");
+  // OWASP CSV Formula Injection defense: escape formula triggers
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
   const onRestoreFile = async (f: File | undefined) => {
     if (!f) return;
     try {
-      const parsed = JSON.parse(await f.text());
+      if (f.size > 10 * 1024 * 1024) {
+        setMsg("Backup file exceeds maximum allowed size (10MB).");
+        return;
+      }
+      const rawText = await f.text();
+      const parsed = JSON.parse(rawText);
       const data = (parsed?.data ?? parsed) as Partial<BackupData>;
       if (!Array.isArray(data.trackers)) throw new Error("bad file");
       const full: BackupData = {
         arc: data.arc ?? null,
-        profile: data.profile ?? { name: "", email: "" },
-        trackers: data.trackers,
-        entries: data.entries ?? [],
-        photoMeta: data.photoMeta ?? [],
-        meals: data.meals ?? [],
+        profile: {
+          name: String(data.profile?.name ?? "").slice(0, 50),
+          email: String(data.profile?.email ?? "").slice(0, 100),
+        },
+        trackers: data.trackers.slice(0, 100),
+        entries: Array.isArray(data.entries) ? data.entries.slice(0, 20000) : [],
+        photoMeta: Array.isArray(data.photoMeta) ? data.photoMeta.slice(0, 1000) : [],
+        meals: Array.isArray(data.meals) ? data.meals.slice(0, 5000) : [],
         nutritionTargets: data.nutritionTargets ?? { calories: 2000, protein: 150, carbs: 220, fats: 70, fiber: 30 },
         preferences: data.preferences ?? { accent: "blue" as const, units: "metric" as const, startTab: "/" as const },
         reminders: data.reminders ?? {
@@ -117,7 +134,7 @@ export function DataCard() {
         },
       });
     } catch {
-      setMsg("That file isn't a Winter Arc backup.");
+      setMsg("That file isn't a valid Winter Arc backup.");
     }
     setTimeout(() => setMsg(""), 4000);
   };
@@ -129,14 +146,30 @@ export function DataCard() {
     for (const e of s.entries) {
       const t = byId[e.trackerId];
       lines.push(
-        [e.date, `"${(t?.name ?? "?").replace(/"/g, '""')}"`, t?.type ?? "", String(e.value), e.targetSnapshot ?? "", e.unitSnapshot ?? ""].join(",")
+        [
+          sanitizeCSVField(e.date),
+          sanitizeCSVField(t?.name ?? "?"),
+          sanitizeCSVField(t?.type ?? ""),
+          sanitizeCSVField(e.value),
+          sanitizeCSVField(e.targetSnapshot ?? ""),
+          sanitizeCSVField(e.unitSnapshot ?? "")
+        ].join(",")
       );
     }
     lines.push("");
     lines.push("date,meal,items,calories,protein,carbs,fats,fiber");
     for (const m of s.meals) {
       lines.push(
-        [m.dateKey, `"${m.name.replace(/"/g, '""')}"`, `"${m.items.replace(/"/g, '""')}"`, m.calories, m.protein, m.carbs, m.fats, m.fiber].join(",")
+        [
+          sanitizeCSVField(m.dateKey),
+          sanitizeCSVField(m.name),
+          sanitizeCSVField(m.items),
+          sanitizeCSVField(m.calories),
+          sanitizeCSVField(m.protein),
+          sanitizeCSVField(m.carbs),
+          sanitizeCSVField(m.fats),
+          sanitizeCSVField(m.fiber)
+        ].join(",")
       );
     }
     const stamp = new Date().toISOString().slice(0, 10);

@@ -211,6 +211,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut: AuthCtx["signOut"] = useCallback(async () => {
+    try {
+      if (typeof window !== "undefined") {
+        window.sessionStorage.removeItem("wa-pending-action");
+        window.localStorage.removeItem("wa-guest");
+      }
+      const st = useWinterArc.getState();
+      st.setOwnerUid(null);
+      st.loadDemo();
+    } catch {
+      /* ignore */
+    }
     await supabase().auth.signOut();
   }, []);
 

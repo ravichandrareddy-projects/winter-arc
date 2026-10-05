@@ -110,7 +110,10 @@ export function BodyPhotos() {
     });
 
   const onFile = (f: File | undefined) => {
-    if (!f || !f.type.startsWith("image/")) return;
+    if (!f) return;
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+    if (!allowed.includes(f.type.toLowerCase())) return;
+    if (f.size > 15 * 1024 * 1024) return; // 15MB cap
     if (pending) URL.revokeObjectURL(pending.url);
     setPending({ blob: f, url: URL.createObjectURL(f) });
     setPendingAngle("front");
