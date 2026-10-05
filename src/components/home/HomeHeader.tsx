@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Bell, CalendarDays, ChevronDown, Moon, Sun, Sunrise } from "lucide-react";
 import { useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
@@ -97,9 +98,10 @@ export function HomeHeader({ selectedDate }: { selectedDate: string }) {
           <button
             onClick={() => requireAuth({ route: pathname, label: "Sign in to save" })}
             title="Demo preview — sign in to save your own data"
-            className="rounded-full border border-dashed border-accent px-3 py-2 text-[11px] font-extrabold tracking-widest text-accent"
+            className="flex items-center gap-1.5 rounded-full border border-dashed border-accent/80 bg-accent/10 px-3 py-1.5 text-[11px] font-extrabold tracking-wider text-accent hover:bg-accent/20 transition-all shadow-sm"
           >
-            DEMO
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+            SIGN IN / DEMO
           </button>
         )}
         {arc && (
@@ -135,7 +137,9 @@ export function HomeHeader({ selectedDate }: { selectedDate: string }) {
             <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-card bg-accent" />
           )}
         </button>
-        <DefaultAvatar name={profile.name} />
+        <Link href="/settings" title="Profile & Settings" className="rounded-full transition-transform hover:scale-105">
+          <DefaultAvatar name={profile.name} />
+        </Link>
       </div>
 
       {/* edit name */}

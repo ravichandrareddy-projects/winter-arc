@@ -160,13 +160,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             “A better you is a series of better days.”
           </p>
         </div>
-        <div className="mt-auto flex items-center gap-2 pt-4">
-          <DefaultAvatar name={profile.name} className="h-9 w-9 text-xs" />
+        <Link
+          href="/settings"
+          className="mt-auto flex items-center gap-2 pt-4 group rounded-xl p-2 transition-colors hover:bg-card/60"
+        >
+          <DefaultAvatar name={profile.name} className="h-9 w-9 text-xs transition-transform group-hover:scale-105" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold">{profile.name}</p>
+            <p className="truncate text-sm font-bold group-hover:text-accent transition-colors">{profile.name}</p>
             <p className="truncate text-xs text-muted">{profile.email}</p>
           </div>
-        </div>
+        </Link>
       </aside>
 
       {/* content */}

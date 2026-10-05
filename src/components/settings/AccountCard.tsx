@@ -31,9 +31,17 @@ export function AccountCard() {
           </p>
         </div>
       ) : (
-        <p className="text-sm text-muted">
-          Browsing as guest — explore freely. Sign in when you save something.
-        </p>
+        <div className="flex flex-col gap-3">
+          <p className="text-sm text-muted">
+            Browsing as guest. Sign in to save your personal 90-day progress permanently across all your devices.
+          </p>
+          <a
+            href="/login"
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-foreground text-sm font-bold text-background transition-opacity hover:opacity-90 shadow-md"
+          >
+            Sign In or Create Account
+          </a>
+        </div>
       )}
     </SettingsCard>
   );
