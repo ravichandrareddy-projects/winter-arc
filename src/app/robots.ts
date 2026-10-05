@@ -1,20 +1,21 @@
 import type { MetadataRoute } from "next";
 
+const CANONICAL_SITE_URL = "https://winterarc.indevs.in";
+
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://winterarc.app";
   return {
     rules: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/auth/callback", "/api/"],
+        disallow: ["/auth/", "/api/"],
       },
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: ["/auth/callback", "/api/"],
+        disallow: ["/auth/", "/api/"],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${CANONICAL_SITE_URL}/sitemap.xml`,
   };
 }

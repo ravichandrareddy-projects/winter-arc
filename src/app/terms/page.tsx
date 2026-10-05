@@ -4,10 +4,15 @@ import { ArrowLeft, FileText, AlertTriangle, ShieldCheck } from "lucide-react";
 import { WinterArcLogo } from "@/components/brand";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Winter Arc Protocol",
+  title: "Terms of Service",
   description: "Terms and conditions of use for Winter Arc, including health disclaimers, usage terms, and intellectual property guidelines.",
   alternates: {
-    canonical: "/terms",
+    canonical: "https://winterarc.indevs.in/terms",
+  },
+  openGraph: {
+    title: "Terms of Service — Winter Arc",
+    description: "Terms and conditions of use for Winter Arc, including health disclaimers, usage terms, and intellectual property guidelines.",
+    url: "https://winterarc.indevs.in/terms",
   },
 };
 

@@ -1,0 +1,48 @@
+# Winter Arc
+
+> Winter Arc is a personal progress tracking system for recording daily habits, viewing trends, and understanding personal progress over time.
+
+Winter Arc is a personal progress tracking web application designed to help users log, visualize, understand, and improve their daily habits and personal progress.
+
+Core concept:
+LOG → SEE → UNDERSTAND → IMPROVE
+
+## Product
+
+- **Daily Tracking**: Daily protocol tracking with numeric targets, steppers, binary check-ins, and multi-entry logging.
+- **Goals**: Target setting for daily habits across the 90-day arc duration.
+- **Sleep Tracking**: Target bedtime windows, sleep duration recording, and sleep schedule consistency.
+- **Wake-Up Tracking**: Morning wake-up logging, target wake windows, and wake consistency streaks.
+- **Fitness Tracking**: Workout routines, exercise split management, sets, reps, weight logs, and daily physical activity tracking.
+- **Transformation Tracking**: Visual progress photo capture, timeline comparison, and body weight logs.
+- **Food & Nutrition Tracking**: Daily meals logging, calorie monitoring, and macronutrient balance (protein, carbohydrates, fats).
+- **Progress Visualization**: Complete 90-day consistency heatmap, completion rates, and phase progression.
+- **Consistency Tracking**: Streak tracking, milestone achievements, and discipline metrics.
+
+## Public Pages
+
+- [Home](https://winterarc.indevs.in/)
+- [Sleep](https://winterarc.indevs.in/sleep)
+- [Wake Up](https://winterarc.indevs.in/wake-up)
+- [Fitness](https://winterarc.indevs.in/fitness)
+- [Transformation](https://winterarc.indevs.in/fitness/photos)
+- [Food](https://winterarc.indevs.in/food)
+- [Progress](https://winterarc.indevs.in/progress)
+- [Settings](https://winterarc.indevs.in/settings)
+- [Intro](https://winterarc.indevs.in/intro)
+- [Privacy Policy](https://winterarc.indevs.in/privacy)
+- [Terms of Service](https://winterarc.indevs.in/terms)
+
+## How It Works
+
+DATE → BOX → DATA POINT → LINE → GRAPH → TREND
+
+Winter Arc provides an intuitive, friction-free interface where users record their own factual data daily and observe real trend lines over time. It helps users observe objective trends instead of inventing or predicting personal results.
+
+## Important
+
+- Winter Arc is a personal tracking and productivity tool, not a medical provider.
+- User data belongs strictly to the user.
+- The system does not fabricate or hallucinate personal data.
+- Missing tracking data remains missing rather than being artificially invented.
+- Guest mode stores data strictly locally on the user's device.

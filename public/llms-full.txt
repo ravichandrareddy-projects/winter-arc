@@ -1,0 +1,101 @@
+# Winter Arc — Complete System Documentation
+
+> Winter Arc is a personal progress tracking system for recording daily habits, viewing trends, and understanding personal progress over time.
+> Production Canonical URL: https://winterarc.indevs.in
+
+---
+
+## 1. Overview & Purpose
+
+Winter Arc is a dedicated discipline and self-mastery tracking application. Designed around a focused 90-day duration, it empowers individuals to commit to a rigorous period of self-improvement across sleep, early rising, physical training, structured nutrition, and daily habit consistency.
+
+The overarching purpose is to provide an objective, private, and distraction-free system to log daily inputs, visualize patterns, understand behavioral trends, and maintain consistency.
+
+### Core Philosophy
+- **LOG → SEE → UNDERSTAND → IMPROVE**: Self-mastery starts with honest self-recording. Logging data reveals trends; understanding trends drives genuine personal growth.
+- **DATE → BOX → DATA POINT → LINE → GRAPH → TREND**: Simple daily check-ins compound into actionable data visualizations over 90 days.
+- **Local-First & Data Ownership**: Users have full control of their personal logs. Guest mode runs 100% on the local device without requiring an account.
+
+---
+
+## 2. Terminology
+
+- **Arc**: A dedicated 90-day tracking period defined by a start date and an end date.
+- **Phase**: The 90-day arc is divided into three distinct 30-day phases:
+  - *Phase 1 (Days 1–30) — Foundation*: Building baseline routines, eliminating friction, establishing early rising and sleep rhythm.
+  - *Phase 2 (Days 31–60) — Momentum*: Solidifying habits, pushing physical performance, strengthening dietary discipline.
+  - *Phase 3 (Days 61–90) — Mastery*: Locking in permanent lifestyle transformation and finishing strong.
+- **Tracker**: An individual habit, target, or metric tracked daily (e.g., Sleep, Wake-Up, Water, Workout, Reading).
+- **Target / Goal**: The daily quantifiable objective assigned to a tracker (e.g., 8 hours sleep, 5:00 AM wake, 3500ml water, 2500 kcal).
+- **Date Strip**: An interactive horizontal date selector allowing immediate logging and viewing across current and past arc days without exposing pre-arc dates.
+- **Heatmap**: A visual 90-cell grid reflecting daily completion rate across all active trackers.
+
+---
+
+## 3. Product Features & Modules
+
+### 3.1 Sleep Tracking (`/sleep`)
+- Target bedtime window configuration (e.g., 22:00 to 06:00).
+- Visual hour-by-hour grid showing duration, sleep onset, and wake time.
+- Sliding multi-day view clamped to the user's arc start date (never displaying pre-arc or ghost days).
+- Statistics: Average duration, bedtime consistency percentage, and sleep target adherence.
+
+### 3.2 Wake-Up Tracking (`/wake-up`)
+- Morning wake-up time logger with target wake-up window.
+- Visual wake timeline indicating on-time versus off-window days.
+- Streak counters for early rising discipline.
+
+### 3.3 Fitness Tracking (`/fitness`)
+- Daily workout split logger (e.g., Push, Pull, Legs, Upper, Lower, Cardio, Rest).
+- Exercise-level tracking: sets, repetitions, and weight logged per exercise.
+- Direct link to Transformation progress photo journal.
+
+### 3.4 Transformation Tracking (`/fitness/photos`)
+- Private on-device and authenticated cloud photo journal to record visual physique changes over the 90 days.
+- Comparison viewer showing beginning versus current progress.
+- Body weight entry tracking with customizable measurement units (kg / lbs).
+
+### 3.5 Food & Nutrition Tracking (`/food`)
+- Daily meal table (Breakfast, Lunch, Dinner, Snacks).
+- Macronutrient tracking: Protein (g), Carbohydrates (g), Fats (g), and Total Calories (kcal).
+- Daily target comparison bars indicating goal progress.
+
+### 3.6 Progress & Trends (`/progress`)
+- Full 90-day consistency heatmap showing intensity of daily habit adherence.
+- Cumulative metrics: Completion percentage across all active trackers, current streak, best streak.
+- Phase breakdown charts analyzing consistency shifts from Foundation through Mastery.
+
+### 3.7 Settings & Customization (`/settings`)
+- Profile management: user name, email, and authentication state.
+- Arc configuration: customized start date and duration.
+- Notification reminders: local browser habit alerts and time preferences.
+- Appearance: curated dark themes and accent colors (Default Blue, Violet, Emerald, Amber, Rose).
+- Data management: one-click CSV data export and permanent reset options.
+
+---
+
+## 4. Public Navigation & URLs
+
+All public pages are accessible on the canonical domain `https://winterarc.indevs.in`:
+
+- [Home Dashboard](https://winterarc.indevs.in/)
+- [Sleep Tracking](https://winterarc.indevs.in/sleep)
+- [Wake Up Tracking](https://winterarc.indevs.in/wake-up)
+- [Fitness Tracking](https://winterarc.indevs.in/fitness)
+- [Transformation Photos](https://winterarc.indevs.in/fitness/photos)
+- [Food Tracking](https://winterarc.indevs.in/food)
+- [Progress & Trends](https://winterarc.indevs.in/progress)
+- [Settings](https://winterarc.indevs.in/settings)
+- [Intro & Protocol Overview](https://winterarc.indevs.in/intro)
+- [Privacy Policy](https://winterarc.indevs.in/privacy)
+- [Terms of Service](https://winterarc.indevs.in/terms)
+
+---
+
+## 5. Privacy, Security & Disclaimers
+
+- **Zero Third-Party Advertising**: Winter Arc does not sell, broker, or monetize user data.
+- **Local-First Security**: Guest usage keeps data strictly within the client browser.
+- **Row-Level Security (RLS)**: Authenticated cloud backups utilize strict Supabase Row Level Security where only the authenticated user session can access their records.
+- **No Medical Claims**: Winter Arc is an interactive self-tracking tool. It does not provide medical, clinical nutrition, or therapeutic diagnosis. Users should consult licensed healthcare professionals before undertaking strenuous exercise or significant caloric restrictions.
+- **No Data Fabrication**: The application visualizes only user-entered data points. Missing days remain missing to preserve analytical integrity.

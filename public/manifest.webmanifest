@@ -1,12 +1,17 @@
 {
   "name": "Winter Arc",
   "short_name": "Winter Arc",
-  "description": "Add once. Log daily. See the trend.",
+  "description": "Personal progress tracking system for recording daily habits, viewing trends, and understanding personal progress over time.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0B0F14",
   "theme_color": "#0B0F14",
   "icons": [
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ]
 }

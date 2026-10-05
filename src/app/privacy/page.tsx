@@ -4,10 +4,15 @@ import { ArrowLeft, Lock, ShieldCheck, UserCheck, EyeOff, Database } from "lucid
 import { WinterArcLogo } from "@/components/brand";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Winter Arc Protocol",
+  title: "Privacy Policy",
   description: "Learn how Winter Arc protects your privacy, personal habit logs, fitness photos, and account data with our local-first and secure sync architecture.",
   alternates: {
-    canonical: "/privacy",
+    canonical: "https://winterarc.indevs.in/privacy",
+  },
+  openGraph: {
+    title: "Privacy Policy — Winter Arc",
+    description: "Learn how Winter Arc protects your privacy, personal habit logs, fitness photos, and account data with our local-first and secure sync architecture.",
+    url: "https://winterarc.indevs.in/privacy",
   },
 };
 
