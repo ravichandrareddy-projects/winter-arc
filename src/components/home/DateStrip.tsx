@@ -7,7 +7,10 @@ import {
   monthDayShort,
   weekdayShort,
   todayKey,
+  parseKey,
 } from "@/lib/dates";
+import { differenceInCalendarDays } from "date-fns";
+import { useWinterArc } from "@/lib/store";
 
 const WINDOW = 10;
 
@@ -18,18 +21,29 @@ export function DateStrip({
   selectedDate: string;
   onSelect: (d: string) => void;
 }) {
+  const arc = useWinterArc((s) => s.arc);
   const today = todayKey();
-  // window starts 5 days before selection so selected sits mid-strip like Image 2
+  const arcStart = arc?.startDate ?? today;
   const [offset, setOffset] = useState(0);
-  const base = addDaysKey(selectedDate, -5 + offset);
+
+  // Never show dates before arcStart (no yesterday or pre-arc dates)
+  const diffFromStart = Math.max(0, differenceInCalendarDays(parseKey(selectedDate), parseKey(arcStart)));
+  const back = Math.min(diffFromStart, 2);
+  const rawBase = addDaysKey(selectedDate, -back + offset);
+  const base = rawBase < arcStart ? arcStart : rawBase;
   const days = Array.from({ length: WINDOW }, (_, i) => addDaysKey(base, i));
+
+  const atStart = base <= arcStart;
 
   return (
     <div className="flex items-center gap-2">
       <button
-        onClick={() => setOffset((o) => o - WINDOW)}
+        onClick={() => setOffset((o) => Math.max(0, o - WINDOW))}
+        disabled={atStart}
         aria-label="Previous days"
-        className="flex h-12 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-card"
+        className={`flex h-12 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-card transition-opacity ${
+          atStart ? "opacity-30 cursor-not-allowed" : "hover:border-accent"
+        }`}
       >
         <ChevronLeft className="h-5 w-5" />
       </button>

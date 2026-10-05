@@ -8,7 +8,7 @@ import { DateStrip } from "@/components/home/DateStrip";
 import { TimeGrid } from "@/components/sleep/TimeGrid";
 import { TimeStats } from "@/components/sleep/TimeStats";
 import { Sheet } from "@/components/Sheet";
-import { addDaysKey, formatTime12 } from "@/lib/dates";
+import { formatTime12, getArcWindowDays, arcDayNumber, todayKey } from "@/lib/dates";
 import { requireAuth } from "@/lib/auth-guard";
 import { useWinterArc } from "@/lib/store";
 import { DEFAULT_WAKE_WINDOW, WINDOW_HOURS } from "@/lib/types";
@@ -18,10 +18,14 @@ function shortHour(hhmm: string): string {
 }
 
 export default function WakeUpPage() {
+  const arc = useWinterArc((s) => s.arc);
   const trackers = useWinterArc((s) => s.trackers);
   const selectedDate = useWinterArc((s) => s.selectedDate);
   const setSelectedDate = useWinterArc((s) => s.setSelectedDate);
   const [range, setRange] = useState<7 | 14 | 30>(14);
+
+  const arcStart = arc?.startDate ?? todayKey();
+  const totalDays = arc ? arcDayNumber(arc.startDate, arc.endDate) : 90;
 
   const wakeTracker =
     trackers.find(
@@ -40,9 +44,10 @@ export default function WakeUpPage() {
   );
   const [windowError, setWindowError] = useState("");
 
+  // Start from arc start date and show forward — never show pre-arc days / yesterday
   const days = useMemo(
-    () => Array.from({ length: range }, (_, i) => addDaysKey(selectedDate, i - (range - 1))),
-    [selectedDate, range]
+    () => getArcWindowDays(arcStart, selectedDate, range, totalDays),
+    [arcStart, selectedDate, range, totalDays]
   );
 
   const winLabel = wakeTracker

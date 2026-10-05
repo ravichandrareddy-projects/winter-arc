@@ -288,12 +288,17 @@ export const useWinterArc = create<WinterArcState>()(
       demoLoaded: false,
 
       ensureSeed: () => {
-        // Visitors get the fixed demo bundle (read-only, never saved).
+        // Visitors get the fresh demo bundle starting today on Day 1.
         // Authed users are filled by loadUserData() instead.
-        // Pre-seeded state (E2E/showcase) is left untouched.
         const s = get();
-        if (!s.demoLoaded && s.trackers.length === 0) get().loadDemo();
-        else if (!s.demoLoaded) set({ demoLoaded: true });
+        if (
+          s.dataMode === "demo" &&
+          (!s.demoLoaded || s.trackers.length === 0 || (s.arc && s.arc.startDate !== todayKey()))
+        ) {
+          get().loadDemo();
+        } else if (!s.demoLoaded) {
+          set({ demoLoaded: true });
+        }
       },
 
       setOwnerUid: (uid) => set({ ownerUid: uid }),

@@ -16,8 +16,8 @@ export interface DemoBundle {
 
 export function buildDemoBundle(): DemoBundle {
   const today = todayKey();
-  const start = addDaysKey(today, -6);
-  const end = addDaysKey(start, 89);
+  const start = today; // Arc starts today (Day 1)
+  const end = addDaysKey(start, 89); // Real 90 Days Arc (Days 1 - 90)
   const now = nowISO();
 
   const trackers: Tracker[] = CORE_TRACKER_DEFS.map((d, i) => ({
