@@ -3,19 +3,22 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  CheckCircle2,
   Dumbbell,
+  Flame,
   House,
   Moon,
   Settings as SettingsIcon,
+  Sparkles,
   Sun,
   TrendingUp,
   UtensilsCrossed,
 } from "lucide-react";
 import { WinterArcWordmark, DefaultAvatar } from "./brand";
-import { arcDayNumber, todayKey } from "@/lib/dates";
+import { arcDayNumber, todayKey, monthDayShort, monthDayYear } from "@/lib/dates";
 import { applyAccent } from "@/lib/accent";
 import { startReminderLoop } from "@/lib/notify";
-import { useWinterArc } from "@/lib/store";
+import { selectDayCompletion, useWinterArc } from "@/lib/store";
 import { useEffect } from "react";
 import { NotificationToastHub } from "./NotificationToastHub";
 
@@ -123,15 +126,43 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, router]);
 
+  const trackers = useWinterArc((s) => s.trackers);
+  const entries = useWinterArc((s) => s.entries);
+
   const today = todayKey();
   const totalDays = arc ? arcDayNumber(arc.startDate, arc.endDate) : 90;
   const dayN = arc ? Math.min(totalDays, Math.max(1, arcDayNumber(arc.startDate, today))) : 1;
+  const remainingDays = Math.max(0, totalDays - dayN);
   const pct = Math.round((dayN / Math.max(1, totalDays)) * 100);
+
+  const todayStats = selectDayCompletion(trackers, entries, today);
+
+  const phase =
+    dayN <= 30
+      ? {
+          num: 1,
+          name: "Foundation",
+          badge: "text-amber-400 bg-amber-400/10 border-amber-400/25",
+          quote: "“Discipline is choosing between what you want now and what you want most.”",
+        }
+      : dayN <= 60
+      ? {
+          num: 2,
+          name: "Momentum",
+          badge: "text-sky-400 bg-sky-400/10 border-sky-400/25",
+          quote: "“The winter arc is won in the silent hours no one sees.”",
+        }
+      : {
+          num: 3,
+          name: "Mastery",
+          badge: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25",
+          quote: "“Mastery is not an act, but a habit. Finish what you started.”",
+        };
 
   return (
     <div className="min-h-dvh lg:flex">
       {/* desktop sidebar */}
-      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-sidebar/85 px-4 py-6 backdrop-blur-xl lg:flex">
+      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-sidebar/85 px-4 py-6 backdrop-blur-xl lg:flex">
         <div className="mb-6 px-1">
           <WinterArcWordmark />
         </div>
@@ -140,26 +171,87 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <NavLink key={n.href} {...n} active={pathname === n.href} />
           ))}
         </nav>
-        <div className="mt-6 rounded-2xl border border-border bg-card p-4">
-          <p className="text-sm font-bold">{totalDays} Day Arc</p>
-          <p className="mt-0.5 text-xs text-muted">
-            {arc ? `${arc.startDate} – ${arc.endDate}` : "…"}
-          </p>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-track">
-            <div className="h-full rounded-full bg-accent" style={{ width: `${pct}%` }} />
-          </div>
-          <p className="mt-1.5 flex justify-between text-xs text-muted">
-            <span>
-              Day {dayN} / {totalDays}
+
+        {/* 90-Day Arc Progress Card */}
+        <div className="mt-5 rounded-2xl border border-border bg-card/80 p-3.5 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center gap-1.5">
+              <Flame className="h-4 w-4 text-accent" />
+              <span className="text-xs font-bold text-foreground">90-Day Arc</span>
+            </div>
+            <span className={`rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${phase.badge}`}>
+              P{phase.num} · {phase.name}
             </span>
-            <span>{pct}%</span>
+          </div>
+
+          <p className="mt-1 text-[11px] text-muted">
+            {arc ? `${monthDayShort(arc.startDate)} – ${monthDayYear(arc.endDate)}` : "90 Days"}
+          </p>
+
+          <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-track/80">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-accent/80 to-accent transition-all duration-700 shadow-sm"
+              style={{ width: `${Math.max(2, pct)}%` }}
+            />
+          </div>
+
+          <div className="mt-2 flex items-center justify-between text-[11px]">
+            <span>
+              <span className="font-bold text-foreground">Day {dayN}</span>
+              <span className="text-muted"> / {totalDays}</span>
+            </span>
+            <span>
+              <span className="font-bold text-accent">{pct}%</span>
+              <span className="text-muted ml-1">({remainingDays}d left)</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Today's Protocol Progress Card */}
+        <div className="mt-2.5 rounded-2xl border border-border bg-card/80 p-3.5 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className={`h-4 w-4 ${todayStats.pct === 100 && todayStats.total > 0 ? "text-emerald-400" : "text-muted"}`} />
+              <span className="text-xs font-bold text-foreground">Today&apos;s Protocol</span>
+            </div>
+            <span className={`text-xs font-extrabold ${todayStats.pct === 100 && todayStats.total > 0 ? "text-emerald-400" : "text-foreground"}`}>
+              {todayStats.pct}%
+            </span>
+          </div>
+
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-track/80">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${
+                todayStats.pct === 100 && todayStats.total > 0
+                  ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                  : "bg-accent"
+              }`}
+              style={{ width: `${todayStats.total === 0 ? 0 : Math.max(3, todayStats.pct)}%` }}
+            />
+          </div>
+
+          <div className="mt-1.5 flex items-center justify-between text-[11px] text-muted">
+            <span>
+              <strong className="text-foreground font-semibold">{todayStats.done}</strong> of {todayStats.total} done
+            </span>
+            {todayStats.pct === 100 && todayStats.total > 0 ? (
+              <span className="font-bold text-emerald-400">Locked In! 🔥</span>
+            ) : (
+              <span>{Math.max(0, todayStats.total - todayStats.done)} remaining</span>
+            )}
+          </div>
+        </div>
+
+        {/* Daily Mindset Quote */}
+        <div className="mt-2.5 rounded-2xl border border-border/70 bg-card/50 p-3">
+          <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-muted mb-1">
+            <Sparkles className="h-3 w-3 text-accent" /> Mindset
+          </div>
+          <p className="text-[11px] italic leading-relaxed text-muted/90">
+            {phase.quote}
           </p>
         </div>
-        <div className="mt-3 rounded-2xl border border-border bg-card p-4">
-          <p className="text-xs italic leading-relaxed text-muted">
-            “A better you is a series of better days.”
-          </p>
-        </div>
+
         <Link
           href="/settings"
           className="mt-auto flex items-center gap-2 pt-4 group rounded-xl p-2 transition-colors hover:bg-card/60"
