@@ -282,8 +282,8 @@ export function AuthModal() {
                   )}
 
                   <p className="flex items-center justify-center gap-3 text-[11px] text-muted">
-                    <Link href="/settings" onClick={close} className="underline underline-offset-2">Privacy Policy</Link>
-                    <Link href="/settings" onClick={close} className="underline underline-offset-2">Terms</Link>
+                    <Link href="/privacy" onClick={close} className="underline underline-offset-2 hover:text-foreground transition-colors">Privacy Policy</Link>
+                    <Link href="/terms" onClick={close} className="underline underline-offset-2 hover:text-foreground transition-colors">Terms of Service</Link>
                   </p>
                 </div>
               )}

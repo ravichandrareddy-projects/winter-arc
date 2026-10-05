@@ -90,9 +90,10 @@ export function AboutCard() {
         {row(<Mail className="h-4 w-4" />, "Send Feedback", "", undefined, feedbackHref)}
         {DOCS.map((d) => {
           const Icon = d.icon;
+          const href = d.key === "privacy" ? "/privacy" : d.key === "terms" ? "/terms" : undefined;
           return (
             <div key={d.key}>
-              {row(<Icon className="h-4 w-4" />, d.title, "", () => setDoc(d))}
+              {row(<Icon className="h-4 w-4" />, d.title, "", href ? undefined : () => setDoc(d), href)}
             </div>
           );
         })}

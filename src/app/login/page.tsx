@@ -385,6 +385,16 @@ function LoginForm() {
                   Continue as Guest (Preview Mode)
                 </NextLink>
 
+                <p className="mt-2 flex items-center justify-center gap-3 text-[11px] text-muted">
+                  <NextLink href="/privacy" className="underline underline-offset-2 hover:text-foreground transition-colors">
+                    Privacy Policy
+                  </NextLink>
+                  <span>•</span>
+                  <NextLink href="/terms" className="underline underline-offset-2 hover:text-foreground transition-colors">
+                    Terms of Service
+                  </NextLink>
+                </p>
+
                 {mode === "forgot" && (
                   <button
                     type="button"
