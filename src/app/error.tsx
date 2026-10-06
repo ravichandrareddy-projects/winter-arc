@@ -5,10 +5,10 @@ import { RotateCcw } from "lucide-react";
 
 export default function GlobalError({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     // Log unexpected runtime crashes
@@ -26,7 +26,7 @@ export default function GlobalError({
       </p>
       <div className="mt-6 flex items-center gap-3">
         <button
-          onClick={() => reset()}
+          onClick={() => retry()}
           className="flex h-11 items-center gap-2 rounded-full bg-foreground px-6 text-xs font-extrabold text-background hover:opacity-90 transition-opacity"
         >
           <RotateCcw className="h-4 w-4" /> Try Again

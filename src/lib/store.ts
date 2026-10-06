@@ -696,9 +696,14 @@ export const useWinterArc = create<WinterArcState>()(
       },
       // Never merge another account's (or demo) rows: owner must match.
       merge: (persisted, current) => {
-        const p = persisted as Partial<WinterArcState>;
-        if (!p || p.ownerUid !== current.ownerUid) return current;
-        return { ...current, ...p };
+        try {
+          const p = persisted as Partial<WinterArcState>;
+          if (!p || p.ownerUid !== current.ownerUid) return current;
+          return { ...current, ...p };
+        } catch {
+          // Corrupt persisted data — start fresh.
+          return current;
+        }
       },
       partialize: (s) => ({
         arc: s.arc,
