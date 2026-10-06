@@ -3,17 +3,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f4f6f8;
-  --foreground: #0f1720;
-  --card: #ffffff;
-  --card-2: #eef2f6;
-  --muted: #5d6b7a;
-  --border: #e1e7ee;
-  --track: #e1e7ee;
-  --accent: #1f8fff;
-  --accent-soft: rgba(31, 143, 255, 0.14);
-  --good: #22c55e;
-  --sidebar: #ffffff;
+  --background: #0b0f14;
+  --foreground: #eef3f8;
+  --card: #0c1218;
+  --card-2: #151d27;
+  --muted: #8b98a9;
+  --border: rgba(255, 255, 255, 0.09);
+  --track: rgba(255, 255, 255, 0.1);
+  --accent: #2e9bff;
+  --accent-soft: rgba(46, 155, 255, 0.16);
+  --good: #34d399;
+  --sidebar: #0c121a;
 }
 
 .dark {
@@ -86,17 +86,8 @@ body {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    rgba(244, 246, 248, 0.68),
-    rgba(244, 246, 248, 0.93) 68%
-  );
-  backdrop-filter: blur(1.5px);
-  pointer-events: none;
-}
-
-.dark .app-bg::after {
-  background: linear-gradient(
-    rgba(11, 15, 20, 0.38),
-    rgba(11, 15, 20, 0.88) 68%
+    rgba(11, 15, 20, 0.42),
+    rgba(11, 15, 20, 0.92) 68%
   );
   backdrop-filter: blur(1.5px);
   pointer-events: none;

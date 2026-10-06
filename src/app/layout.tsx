@@ -160,7 +160,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className="h-full">
+    <html lang="en" suppressHydrationWarning className="dark h-full">
       <head>
         <link rel="describedby" href={`${CANONICAL_SITE_URL}/llms.txt`} />
         <script

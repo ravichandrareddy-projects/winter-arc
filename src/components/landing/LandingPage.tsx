@@ -312,10 +312,6 @@ export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
 
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const mounted = useMounted();
-  const isDark = mounted ? (theme === "system" ? resolvedTheme === "dark" : theme === "dark") : true;
-
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
@@ -341,10 +337,6 @@ export default function LandingPage() {
       const top = el.getBoundingClientRect().top + window.scrollY - 64;
       window.scrollTo({ top, behavior: "smooth" });
     }
-  };
-
-  const toggleThemeMode = () => {
-    setTheme(isDark ? "light" : "dark");
   };
 
   return (
@@ -408,19 +400,10 @@ export default function LandingPage() {
 
           {/* Right Action: Single Dominant Action CTA */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggleThemeMode}
-              title={isDark ? "Light Mode" : "Dark Mode"}
-              aria-label="Toggle theme"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/80 bg-card/60 text-muted transition hover:bg-card hover:text-foreground"
-            >
-              {mounted && isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </button>
-
             <Link
               href="/intro"
               id="header-start-btn"
-              className="flex items-center gap-2 rounded-xl border border-accent/50 bg-gradient-to-r from-accent/25 via-accent/15 to-accent/25 px-4 py-2 text-xs sm:text-sm font-bold text-accent shadow-[0_0_20px_rgba(46,155,255,0.25)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(46,155,255,0.45)] hover:border-accent active:translate-y-0"
+              className="flex items-center gap-2 rounded-xl border border-accent/50 bg-gradient-to-r from-accent/25 via-accent/15 to-accent/25 px-5 py-2 text-xs sm:text-sm font-bold text-accent shadow-[0_0_20px_rgba(46,155,255,0.25)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(46,155,255,0.45)] hover:border-accent active:translate-y-0"
             >
               <span>START WINTER ARC</span>
               <ArrowRight className="h-3.5 w-3.5" />
