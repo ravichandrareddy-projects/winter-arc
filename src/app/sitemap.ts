@@ -55,6 +55,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${CANONICAL_SITE_URL}/winter-arc-guide`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    {
+      url: `${CANONICAL_SITE_URL}/winter-arc-rules`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    {
       url: `${CANONICAL_SITE_URL}/intro`,
       lastModified: now,
       changeFrequency: "monthly",

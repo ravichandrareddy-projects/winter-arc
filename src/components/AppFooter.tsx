@@ -95,6 +95,12 @@ export function AppFooter() {
               <li>
                 <Link href="/fitness/photos" className="hover:text-foreground transition-colors">Transformation Photos</Link>
               </li>
+              <li>
+                <Link href="/winter-arc-guide" className="hover:text-foreground transition-colors">Beginner Guide</Link>
+              </li>
+              <li>
+                <Link href="/winter-arc-rules" className="hover:text-foreground transition-colors">Rules & Principles</Link>
+              </li>
             </ul>
           </div>
 
