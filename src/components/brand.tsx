@@ -1,28 +1,22 @@
+import Image from "next/image";
 import type { SVGProps } from "react";
 
-/** Winter Arc mountain mark — Image 2 blue style. */
+/** Winter Arc official branding emblem */
 export function WinterArcLogo({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 32" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M4 28 17 8l7 11 5-7 15 16H4Z"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        strokeLinejoin="round"
-        strokeLinecap="round"
+    <span className={`relative inline-block overflow-hidden rounded-xl flex-shrink-0 ${className ?? "h-8 w-8"}`}>
+      <Image
+        src="/logo.png"
+        alt="Winter Arc"
+        fill
+        sizes="128px"
+        className="object-contain"
+        priority
       />
-      <path
-        d="M17 8l3.5 5.5L24 10l4.5 6.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        opacity="0.55"
-      />
-      <path d="M2 28h44" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-    </svg>
+    </span>
   );
 }
+
 
 export function WinterArcWordmark({ compact = false }: { compact?: boolean }) {
   return (
