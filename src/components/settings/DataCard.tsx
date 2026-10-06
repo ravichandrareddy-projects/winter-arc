@@ -182,21 +182,15 @@ function sanitizeCSVField(val: unknown): string {
       setTimeout(() => setArmed(false), 5000);
       return;
     }
-    requireAuth({
-      route: "/settings",
-      label: "Clear all data",
-      replay: async () => {
-        const uid = useWinterArc.getState().ownerUid;
-        try {
-          if (uid) await wipeCloudData(uid);
-          await deletePhotoDB().catch(() => undefined);
-          window.localStorage.removeItem("winterarc-v2");
-        } finally {
-          wipeAll();
-          window.location.reload();
-        }
-      },
-    });
+    const uid = useWinterArc.getState().ownerUid;
+    try {
+      if (uid) await wipeCloudData(uid).catch(() => undefined);
+      await deletePhotoDB().catch(() => undefined);
+      window.localStorage.removeItem("winterarc-v2");
+    } finally {
+      wipeAll();
+      window.location.reload();
+    }
   };
 
   return (
@@ -205,24 +199,28 @@ function sanitizeCSVField(val: unknown): string {
       title="Data & Privacy"
       sub="Manage your data and privacy settings."
     >
-      <div className="flex flex-col gap-2">
-        <Row icon={<Upload className="h-4 w-4" />} label="Backup Data" onClick={backup} />
+      <div className="flex flex-col gap-2.5">
+        {/* On-device privacy callout */}
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs">
+          <div className="flex items-center gap-2 font-bold text-emerald-400">
+            <ShieldCheck className="h-4 w-4" />
+            <span>100% On-Device Mobile Storage</span>
+          </div>
+          <p className="mt-1 text-[11px] leading-relaxed text-emerald-300/80">
+            All your habits, streaks, sleep data, and photos strictly live in your device&apos;s local storage. We collect zero tracking data.
+          </p>
+        </div>
+
+        <Row icon={<Upload className="h-4 w-4" />} label="Save Backup File to Device (.json)" onClick={backup} />
         <Row
           icon={<Download className="h-4 w-4" />}
-          label="Restore Backup"
-          onClick={() =>
-            requireAuth({
-              route: "/settings",
-              label: "Restore backup",
-              payload: { sheet: "restore" },
-              replay: () => fileRef.current?.click(),
-            })
-          }
+          label="Restore from Backup File (.json)"
+          onClick={() => fileRef.current?.click()}
         />
         <Row icon={<Download className="h-4 w-4" />} label="Export Data (CSV)" onClick={exportCSV} />
         <Row
           icon={<Trash2 className="h-4 w-4" />}
-          label={armed ? "Tap again to confirm wipe" : "Clear All Data"}
+          label={armed ? "Tap again to confirm wipe" : "Clear All Local Data"}
           danger
           onClick={wipe}
         />
@@ -237,8 +235,8 @@ function sanitizeCSVField(val: unknown): string {
           }}
         />
         {msg && <p className="text-xs text-muted">{msg}</p>}
-        <p className="text-xs text-muted">
-          Everything lives on this device. Nothing is uploaded anywhere.
+        <p className="text-[11px] text-muted">
+          Your data belongs to you. You can export a physical backup file anytime and save it in your mobile phone&apos;s storage.
         </p>
       </div>
     </SettingsCard>

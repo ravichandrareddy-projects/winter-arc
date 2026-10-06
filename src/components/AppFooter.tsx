@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
 import { WinterArcLogo } from "./brand";
 
 export function AppFooter() {
@@ -111,7 +112,10 @@ export function AppFooter() {
                 <Link href="/settings" className="hover:text-foreground transition-colors">Settings & Backup</Link>
               </li>
               <li>
-                <Link href="/intro" className="hover:text-foreground transition-colors">Protocol Intro</Link>
+                <Link href="/intro" className="inline-flex items-center gap-1.5 font-bold text-accent hover:text-sky-300 transition-colors">
+                  <Sparkles className="h-3 w-3" />
+                  <span>Intro Screen & Guide</span>
+                </Link>
               </li>
             </ul>
           </div>
@@ -136,12 +140,28 @@ export function AppFooter() {
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* Down Footer with Intro Screen Button */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border/50 pt-6 sm:flex-row text-xs text-muted">
-          <p>© {new Date().getFullYear()} Winter Arc Protocol (winterarc.indevs.in). All rights reserved.</p>
-          <p className="text-[11px] text-muted/80">
-            Log → See → Understand → Improve • Self-Mastery System
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p>© {new Date().getFullYear()} Winter Arc Protocol (winterarc.indevs.in).</p>
+            <Link
+              href="/intro"
+              id="footer-intro-screen-btn"
+              title="Revisit the onboarding intro screen anytime"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-2.5 py-1 text-[11px] font-bold text-accent transition-all duration-200 hover:bg-accent hover:text-white hover:shadow-[0_0_16px_rgba(46,155,255,0.4)] active:scale-95"
+            >
+              <Sparkles className="h-3 w-3" />
+              <span>Intro Screen</span>
+            </Link>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-muted/80">
+            <span className="inline-flex items-center gap-1.5 font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <span>100% On-Device Storage (Private)</span>
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="hidden sm:inline">Self-Mastery System</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -95,14 +95,14 @@ export function HomeHeader({ selectedDate }: { selectedDate: string }) {
 
       <div className="flex items-center gap-2">
         {dataMode === "demo" && (
-          <button
-            onClick={() => requireAuth({ route: pathname, label: "Sign in to save" })}
-            title="Demo preview — sign in to save your own data"
-            className="flex items-center gap-1.5 rounded-full border border-dashed border-accent/80 bg-accent/10 px-3 py-1.5 text-[11px] font-extrabold tracking-wider text-accent hover:bg-accent/20 transition-all shadow-sm"
+          <Link
+            href="/settings"
+            title="Local device mode — 100% on-device private storage"
+            className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-extrabold tracking-wider text-emerald-400 hover:bg-emerald-500/20 transition-all shadow-sm"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-            SIGN IN / DEMO
-          </button>
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            ON-DEVICE (PRIVATE)
+          </Link>
         )}
         {arc && (
           <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs">

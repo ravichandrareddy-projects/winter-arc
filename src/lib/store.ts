@@ -288,13 +288,10 @@ export const useWinterArc = create<WinterArcState>()(
       demoLoaded: false,
 
       ensureSeed: () => {
-        // Visitors get the fresh demo bundle starting today on Day 1.
-        // Authed users are filled by loadUserData() instead.
+        // Visitors get initial starter trackers if empty.
+        // User data stored locally on device is strictly preserved across days.
         const s = get();
-        if (
-          s.dataMode === "demo" &&
-          (!s.demoLoaded || s.trackers.length === 0 || (s.arc && s.arc.startDate !== todayKey()))
-        ) {
+        if (s.trackers.length === 0) {
           get().loadDemo();
         } else if (!s.demoLoaded) {
           set({ demoLoaded: true });

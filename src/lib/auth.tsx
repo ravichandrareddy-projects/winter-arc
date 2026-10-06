@@ -25,6 +25,7 @@ import {
   type PendingAction,
 } from "./auth-guard";
 import { AuthModal } from "@/components/AuthModal";
+import { setHasSeenIntro } from "./intro-storage";
 
 export type { AuthStatus };
 
@@ -108,6 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     const { data: sub } = sb.auth.onAuthStateChange((_event, session) => {
       if (session) {
+        setHasSeenIntro(true);
         const u = session.user;
         setAll("authenticated", u);
         useWinterArc.getState().setOwnerUid(u.id);
@@ -216,6 +218,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         window.sessionStorage.removeItem("wa-pending-action");
         window.localStorage.removeItem("wa-guest");
       }
+      setHasSeenIntro(false);
       const st = useWinterArc.getState();
       st.setOwnerUid(null);
       st.loadDemo();
@@ -223,7 +226,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       /* ignore */
     }
     await supabase().auth.signOut();
-  }, []);
+    router.push("/");
+  }, [router]);
 
   return (
     <Ctx.Provider value={{ status, user, signUp, signIn, signInGoogle, resetPassword, signOut }}>

@@ -227,8 +227,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <Link
+          href="/intro"
+          id="sidebar-intro-screen-btn"
+          className="mt-auto flex items-center gap-2 rounded-xl border border-accent/30 bg-accent/10 px-3 py-2 text-xs font-bold text-accent transition-all hover:bg-accent hover:text-white mb-2"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>Intro Screen & Guide</span>
+        </Link>
+
+        <Link
           href="/settings"
-          className="mt-auto flex items-center gap-2 pt-4 group rounded-xl p-2 transition-colors hover:bg-card/60"
+          className="flex items-center gap-2 group rounded-xl p-2 transition-colors hover:bg-card/60"
         >
           <DefaultAvatar name={profile.name} className="h-9 w-9 text-xs transition-transform group-hover:scale-105" />
           <div className="min-w-0">

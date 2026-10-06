@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { WinterArcLogo } from "@/components/brand";
 import { useTheme } from "@/lib/theme-provider";
+import { setHasSeenIntro } from "@/lib/intro-storage";
 
 function useMounted() {
   return useSyncExternalStore(
@@ -401,6 +402,13 @@ export default function LandingPage() {
           {/* Right Action: Single Dominant Action CTA */}
           <div className="flex items-center gap-3">
             <Link
+              href="/"
+              onClick={() => setHasSeenIntro(true)}
+              className="hidden sm:inline-flex text-xs font-semibold text-muted hover:text-foreground transition-colors"
+            >
+              Open Dashboard
+            </Link>
+            <Link
               href="/intro"
               id="header-start-btn"
               className="flex items-center gap-2 rounded-xl border border-accent/50 bg-gradient-to-r from-accent/25 via-accent/15 to-accent/25 px-5 py-2 text-xs sm:text-sm font-bold text-accent shadow-[0_0_20px_rgba(46,155,255,0.25)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(46,155,255,0.45)] hover:border-accent active:translate-y-0"
@@ -438,7 +446,7 @@ export default function LandingPage() {
           Track your sleep, wake time, fitness, food, habits, and progress — then see what is actually changing.
         </p>
 
-        {/* Primary CTA (One dominant CTA as instructed) */}
+        {/* Action CTAs */}
         <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <Link
             href="/intro"
@@ -447,6 +455,15 @@ export default function LandingPage() {
           >
             <span>START WINTER ARC</span>
             <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
+          </Link>
+          <Link
+            href="/"
+            onClick={() => setHasSeenIntro(true)}
+            id="hero-direct-dashboard-btn"
+            className="flex h-14 w-full sm:w-auto items-center justify-center gap-2.5 rounded-2xl border border-border/80 bg-card/70 px-7 text-sm font-bold text-foreground transition duration-200 hover:bg-card hover:border-accent/50 hover:text-accent backdrop-blur active:scale-95"
+          >
+            <Activity className="h-4 w-4 text-accent" />
+            <span>Launch Dashboard Directly</span>
           </Link>
         </div>
 
@@ -809,6 +826,14 @@ export default function LandingPage() {
             >
               <span>START WINTER ARC</span>
               <ArrowRight className="h-5 w-5" />
+            </Link>
+            <Link
+              href="/"
+              onClick={() => setHasSeenIntro(true)}
+              className="flex h-14 w-full sm:w-auto items-center justify-center gap-2.5 rounded-2xl border border-border/80 bg-card/70 px-7 text-sm font-bold text-foreground hover:bg-card hover:border-accent/50 transition backdrop-blur active:scale-95"
+            >
+              <Activity className="h-4 w-4 text-accent" />
+              <span>Enter Dashboard</span>
             </Link>
           </div>
 

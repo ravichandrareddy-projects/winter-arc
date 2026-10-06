@@ -30,13 +30,10 @@ import {
   Check,
 } from "lucide-react";
 import { WinterArcLogo } from "@/components/brand";
+import { setHasSeenIntro } from "@/lib/intro-storage";
 
 function markSeenAndEnter(): void {
-  try {
-    window.localStorage.setItem("wa-seen-intro", "1");
-  } catch {
-    /* ignore */
-  }
+  setHasSeenIntro(true);
 }
 
 const ONBOARDING_STEPS = [
