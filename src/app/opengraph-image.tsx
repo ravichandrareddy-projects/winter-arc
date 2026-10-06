@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Winter Arc — 90-Day Discipline & Self-Mastery Protocol";
+export const alt = "Winter Arc — Best Winter Arc Tracker & 90-Day Discipline App";
 export const size = {
   width: 1200,
   height: 630,
@@ -45,7 +45,7 @@ export default async function OpenGraphImage() {
             marginBottom: "24px",
           }}
         >
-          ❄️ 90-Day Self-Mastery Protocol
+          ❄️ The Best Winter Arc Tracker
         </div>
 
         {/* Title */}

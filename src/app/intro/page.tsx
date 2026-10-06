@@ -314,7 +314,7 @@ export default function IntroOnboardingPage() {
           <div className="relative z-10 mt-8 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1.5 text-xs font-mono font-bold tracking-widest uppercase text-accent shadow-lg animate-float">
               <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-              <span>THE OFFICIAL PROTOCOL</span>
+              <span>BEST WINTER ARC TRACKER PROTOCOL</span>
             </div>
 
             <h1 className="mt-5 text-3xl font-black sm:text-5xl md:text-6xl tracking-tight text-foreground">

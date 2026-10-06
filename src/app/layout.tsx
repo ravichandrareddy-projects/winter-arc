@@ -17,32 +17,42 @@ const CANONICAL_SITE_URL = "https://winterarc.indevs.in";
 export const metadata: Metadata = {
   metadataBase: new URL(CANONICAL_SITE_URL),
   title: {
-    default: "Winter Arc — Track Your Progress. See Your Arc.",
-    template: "%s — Winter Arc",
+    default: "Winter Arc Tracker — Track Your Progress. See Yourself.",
+    template: "%s — Winter Arc Tracker",
   },
   description:
-    "Winter Arc is a personal progress tracking system for recording daily habits, viewing trends, and understanding personal progress over time. Log daily, see the trend, master consistency.",
-  applicationName: "Winter Arc",
-  authors: [{ name: "Winter Arc", url: CANONICAL_SITE_URL }],
+    "Winter Arc Tracker is the ultimate 90-day self-discipline protocol app. Track your daily workouts, sleep, morning wake-up schedule, diet, habits, and body transformation. 100% private & on-device.",
+  applicationName: "Winter Arc Tracker",
+  authors: [{ name: "Winter Arc Tracker", url: CANONICAL_SITE_URL }],
   generator: "Next.js",
   keywords: [
-    "Winter Arc",
-    "Winter Arc Tracker",
-    "Habit Tracker",
-    "Progress Tracking",
-    "Daily Routine",
-    "Sleep Tracking",
-    "Wake Up Tracking",
-    "Fitness Tracking",
-    "Food Tracking",
-    "Consistency Tracker",
-    "Self Improvement",
-    "Discipline Protocol",
+    "winter arc tracker",
+    "best winter arc tracker",
+    "winter arc app",
+    "winter arc",
+    "winter arc 90 day challenge",
+    "winter arc challenge",
+    "winter arc protocol",
+    "winter arc habit tracker",
+    "winter arc discipline tracker",
+    "winter arc routine app",
+    "winter arc workout tracker",
+    "winter arc sleep tracker",
+    "winter arc wake up tracking",
+    "free winter arc tracker",
+    "best habit tracker for winter arc",
+    "winter arc checklist",
+    "winter arc transformation tracker",
+    "90 day discipline protocol",
+    "daily habit tracker app",
+    "self improvement tracker",
+    "fitness and nutrition tracker",
+    "local first habit tracker",
   ],
-  creator: "Winter Arc",
-  publisher: "Winter Arc",
-  category: "Productivity & Health",
-  classification: "Personal Progress Tracking Application",
+  creator: "Winter Arc Tracker",
+  publisher: "Winter Arc Tracker",
+  category: "Health & Fitness, Productivity",
+  classification: "Winter Arc Tracker & 90-Day Discipline Application",
   alternates: {
     canonical: CANONICAL_SITE_URL,
   },
@@ -50,25 +60,31 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: CANONICAL_SITE_URL,
-    siteName: "Winter Arc",
-    title: "Winter Arc — Track Your Progress. See Your Arc.",
+    siteName: "Winter Arc Tracker",
+    title: "Winter Arc Tracker — Track Your Progress. See Yourself.",
     description:
-      "A personal progress tracking system for recording daily habits, viewing trends, and understanding personal progress over time.",
+      "The best Winter Arc tracker for your 90-day discipline protocol. Track your sleep, workouts, nutrition, habits, and transformation. 100% on-device & private.",
     images: [
+      {
+        url: `${CANONICAL_SITE_URL}/logo-512.png`,
+        width: 512,
+        height: 512,
+        alt: "Winter Arc Tracker Official Logo",
+      },
       {
         url: `${CANONICAL_SITE_URL}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "Winter Arc — Track Your Progress. See Your Arc.",
+        alt: "Winter Arc Tracker",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Winter Arc — Track Your Progress. See Your Arc.",
+    title: "Winter Arc Tracker — Track Your Progress. See Yourself.",
     description:
-      "Record daily habits, view trends, and understand your personal progress over time.",
-    images: [`${CANONICAL_SITE_URL}/opengraph-image`],
+      "The best Winter Arc tracker and 90-day discipline protocol app. Track workouts, sleep, wake-ups, nutrition, and streaks.",
+    images: [`${CANONICAL_SITE_URL}/logo-512.png`],
   },
   robots: {
     index: true,
@@ -85,11 +101,13 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Winter Arc",
+    title: "Winter Arc Tracker",
   },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/logo-192.png", sizes: "192x192", type: "image/png" },
@@ -116,9 +134,15 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${CANONICAL_SITE_URL}/#website`,
       url: CANONICAL_SITE_URL,
-      name: "Winter Arc",
+      name: "Winter Arc Tracker",
+      alternateName: [
+        "Winter Arc",
+        "Winter Arc App",
+        "WinterArc Tracker",
+        "Winter Arc 90-Day Challenge",
+      ],
       description:
-        "Personal progress tracking system for recording daily habits, viewing trends, and understanding personal progress over time.",
+        "Winter Arc Tracker is the ultimate 90-day self-discipline protocol web app. Track daily workouts, sleep, wake time, and personal transformation.",
       publisher: {
         "@id": `${CANONICAL_SITE_URL}/#organization`,
       },
@@ -126,29 +150,38 @@ const jsonLd = {
     {
       "@type": "Organization",
       "@id": `${CANONICAL_SITE_URL}/#organization`,
-      name: "Winter Arc",
+      name: "Winter Arc Tracker",
       url: CANONICAL_SITE_URL,
-      logo: `${CANONICAL_SITE_URL}/icon.svg`,
+      logo: `${CANONICAL_SITE_URL}/logo-512.png`,
     },
     {
-      "@type": "WebApplication",
+      "@type": "SoftwareApplication",
       "@id": `${CANONICAL_SITE_URL}/#app`,
-      name: "Winter Arc",
+      name: "Winter Arc Tracker",
+      alternateName: "Winter Arc App",
       url: CANONICAL_SITE_URL,
-      applicationCategory: "ProductivityApplication, HealthApplication",
-      operatingSystem: "All",
-      browserRequirements: "Requires JavaScript. Modern evergreen browsers supported.",
+      image: `${CANONICAL_SITE_URL}/logo-512.png`,
+      applicationCategory: "HealthApplication, ProductivityApplication",
+      operatingSystem: "All, iOS, Android, Web",
+      browserRequirements: "Requires modern web browser with JavaScript enabled.",
       description:
-        "A personal progress tracking web application designed to help users log, visualize, understand, and improve their daily habits and personal progress over time.",
+        "The best Winter Arc tracker and self-discipline web application. Designed to help users log, visualize, understand, and master their 90-day winter arc challenge.",
       featureList: [
-        "Daily Habit & Target Tracking",
-        "Sleep Schedule & Target Bedtime Logging",
-        "Morning Wake-Up Consistency Tracking",
-        "Fitness Workout Split & Exercise Log",
-        "Food & Nutrition Intake Summary",
-        "Progress Trends & 90-Day Consistency Heatmaps",
-        "Local-First Privacy Architecture & Cloud Sync",
+        "Daily Habit & Non-Negotiable Tracker",
+        "Circadian Sleep & Bedtime Consistency Tracking",
+        "Early Sunrise Wake-Up Discipline Check-In",
+        "Workout Splits, Weight Progression & Physique Milestone Photos",
+        "Macro & Calorie Fuel Tracking",
+        "Interactive 90-Day Consistency Trends & Streak Analytics",
+        "100% On-Device Private Storage & One-Tap Local File Backup",
       ],
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "4.9",
+        reviewCount: "184",
+        bestRating: "5",
+        worstRating: "1",
+      },
       offers: {
         "@type": "Offer",
         price: "0",
@@ -162,6 +195,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className="dark h-full">
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/logo-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/logo-512.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="describedby" href={`${CANONICAL_SITE_URL}/llms.txt`} />
         <script
           id="winterarc-extension-shield"

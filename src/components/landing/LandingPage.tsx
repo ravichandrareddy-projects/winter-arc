@@ -428,9 +428,9 @@ export default function LandingPage() {
         className="relative mx-auto flex min-h-[96svh] max-w-6xl flex-col items-center justify-center px-4 pt-28 pb-16 text-center sm:px-6 sm:pt-36 sm:pb-24"
       >
         {/* Small Eyebrow */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1.5 text-xs font-mono font-bold tracking-[0.2em] uppercase text-accent shadow-sm backdrop-blur">
+        <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1.5 text-xs font-mono font-bold tracking-[0.15em] uppercase text-accent shadow-sm backdrop-blur">
           <span className="h-2 w-2 rounded-full bg-accent animate-ping" />
-          <span>WINTER ARC</span>
+          <span>The Best Winter Arc Tracker</span>
         </div>
 
         {/* Main Headline */}
@@ -443,7 +443,7 @@ export default function LandingPage() {
 
         {/* Supporting Text */}
         <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">
-          Track your sleep, wake time, fitness, food, habits, and progress — then see what is actually changing.
+          The best Winter Arc tracker and 90-day discipline protocol. Track your sleep, wake time, fitness, nutrition, and daily habits — 100% on-device, private, and free.
         </p>
 
         {/* Action CTAs */}
@@ -812,7 +812,7 @@ export default function LandingPage() {
 
           <WinterArcLogo className="mx-auto h-12 w-16 text-accent" />
           <h2 className="mt-6 text-3xl sm:text-5xl font-black text-foreground tracking-tight">
-            START SEEING YOUR ARC.
+            START SEEING YOURSELF.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-base sm:text-lg text-muted">
             Your progress is already happening. Start tracking it.

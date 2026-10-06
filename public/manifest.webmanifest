@@ -1,7 +1,7 @@
 {
-  "name": "Winter Arc",
-  "short_name": "Winter Arc",
-  "description": "Personal progress tracking system for recording daily habits, viewing trends, and understanding personal progress over time.",
+  "name": "Winter Arc Tracker",
+  "short_name": "Winter Arc Tracker",
+  "description": "The best Winter Arc tracker and 90-day self-discipline protocol app.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0B0F14",
