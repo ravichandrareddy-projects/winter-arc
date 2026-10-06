@@ -15,13 +15,15 @@ import {
   Shield,
   Zap,
   Target,
-  Play,
-  Award,
   ChevronRight,
   Sun,
   Droplets,
-  Layers,
   Smartphone,
+  MousePointerClick,
+  PlusCircle,
+  CalendarDays,
+  Lock,
+  ListTodo,
 } from "lucide-react";
 import { WinterArcLogo } from "@/components/brand";
 import { requireAuth } from "@/lib/auth-guard";
@@ -34,6 +36,36 @@ function markSeen(): void {
   }
 }
 
+const HOW_IT_WORKS_STEPS = [
+  {
+    step: "01",
+    badge: "Step 1: Set Your Goals",
+    title: "Pick Your Non-Negotiables",
+    action: "Tap '+' on any tracker to customize targets",
+    desc: "Define what matters for the next 90 days: Water (liters), Sleep (hours), Workouts (splits), or Reading (pages). Don't overcomplicate — choose 4 to 6 core habits that transform you.",
+    icon: ListTodo,
+    tip: "Tip: Start with Sleep + Hydration as your base foundation.",
+  },
+  {
+    step: "02",
+    badge: "Step 2: Log Daily",
+    title: "1-Tap Quick Increments",
+    action: "Tap '+' buttons on your cards throughout the day",
+    desc: "No endless forms or laggy menus. Completed 500ml water? Tap +0.5L. Finished a workout? Tap the checkmark. Done in under 5 seconds so logging never breaks your flow.",
+    icon: MousePointerClick,
+    tip: "Tip: Real-time visual rings show instant feedback as you hit 100%.",
+  },
+  {
+    step: "03",
+    badge: "Step 3: Review & Lock In",
+    title: "Track Phase Streaks & Sync",
+    action: "Watch your 90-day phase roadmap light up",
+    desc: "Check your progress chart at night. Move through Foundation (Days 1–30), Momentum (Days 31–60), and Mastery (Days 61–90). Connect with Supabase to save your streak across all devices.",
+    icon: Flame,
+    tip: "Tip: Never break two days in a row to protect your streak.",
+  },
+];
+
 const FEATURES = [
   {
     icon: Flame,
@@ -43,6 +75,7 @@ const FEATURES = [
     img: "/video-assets/real/01_home_initial.png",
     stat: "90 Days",
     statLabel: "Total Duration",
+    userAction: "Select your active date on the top date-strip, see active streaks, and hit your daily targets.",
   },
   {
     icon: Moon,
@@ -52,6 +85,7 @@ const FEATURES = [
     img: "/video-assets/real/04_sleep.png",
     stat: "8.5 hrs",
     statLabel: "Target Window",
+    userAction: "Log bedtime and wake times to compute recovery scores and lock in consistent sunrise schedules.",
   },
   {
     icon: Dumbbell,
@@ -61,6 +95,7 @@ const FEATURES = [
     img: "/video-assets/real/06_fitness.png",
     stat: "100%",
     statLabel: "Volume Logged",
+    userAction: "Check off your daily lifts, track your sets, and log physique photos securely over 90 days.",
   },
   {
     icon: Utensils,
@@ -70,6 +105,7 @@ const FEATURES = [
     img: "/video-assets/real/07_food.png",
     stat: "160g",
     statLabel: "Protein Target",
+    userAction: "Enter breakfast, lunch, and dinner to stay in your caloric deficit or surplus targets.",
   },
   {
     icon: TrendingUp,
@@ -79,6 +115,7 @@ const FEATURES = [
     img: "/video-assets/real/08_progress.png",
     stat: "+34%",
     statLabel: "Consistency Delta",
+    userAction: "Visit /progress anytime to see your consistency graphs and celebrate streak achievements.",
   },
 ];
 
@@ -107,26 +144,25 @@ const PILLARS = [
 
 const FAQS = [
   {
-    q: "What is the Winter Arc protocol?",
-    a: "The Winter Arc is a dedicated 90-day seasonal sprint where you eliminate distractions, lock into non-negotiable daily routines (sleep, nutrition, training, deep work), and build identity-level discipline before the new year arrives.",
+    q: "How do I use this website?",
+    a: "Click 'Start Winter Arc Tracker' above. You will land directly on the live dashboard. Tap '+' to increment habits like water, sleep, or workouts. You can also customize your goals, adjust targets, or add custom trackers from the Settings tab.",
   },
   {
-    q: "Do I need to pay or create an account immediately?",
-    a: "No. You can tap 'Start Winter Arc Challenge' right now and test all interactive trackers in demo mode immediately. Sign in with Supabase only when you're ready to backup your personal journey across devices.",
+    q: "Do I have to sign up before using it?",
+    a: "No! The tracker opens instantly in full interactive guest mode. All your logs are stored locally on your device. When you want to sync across mobile and desktop, just sign in with Google or Email.",
   },
   {
-    q: "Can I customize my goals and habits?",
-    a: "Yes. Every tracker supports customized daily targets, step increments, frequency schedules, and personalized notification reminders.",
+    q: "What is the 90-day Winter Arc challenge?",
+    a: "It's an intense 90-day focus protocol (October through January) to isolate yourself from distractions, lock down healthy physical and mental disciplines, and emerge completely transformed before the new year.",
   },
   {
-    q: "Is it mobile friendly?",
-    a: "Completely. It is engineered with modern responsive touch interactions and functions as an installable Progressive Web App (PWA).",
+    q: "Can I install it like an app on my phone?",
+    a: "Yes! Open this page on Safari (iOS) or Chrome (Android) and tap 'Add to Home Screen'. It runs full-screen like a native mobile app even when offline.",
   },
 ];
 
 export default function IntroLandingPage() {
   const [activeFeature, setActiveFeature] = useState(0);
-  const [showVideoModal, setShowVideoModal] = useState(false);
 
   return (
     <div className="relative min-h-dvh overflow-x-hidden bg-background text-foreground antialiased selection:bg-accent/25 selection:text-accent">
@@ -169,7 +205,7 @@ export default function IntroLandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative mx-auto flex max-w-5xl flex-col items-center px-4 pt-14 pb-16 text-center sm:px-6 sm:pt-20 sm:pb-24">
+      <section className="relative mx-auto flex max-w-5xl flex-col items-center px-4 pt-14 pb-12 text-center sm:px-6 sm:pt-20 sm:pb-20">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold text-accent shadow-sm backdrop-blur">
           <Sparkles className="h-3.5 w-3.5 animate-pulse" />
@@ -185,45 +221,42 @@ export default function IntroLandingPage() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">
-          A high-performance discipline tracker built for those who refuse to wait for New Year resolutions. Log sleep, fitness, nutrition, and daily non-negotiables in one seamless interface.
+          A high-performance discipline tracker built for those who refuse to wait for New Year resolutions. Track water, sleep, fitness, and nutrition across your 90-day arc.
         </p>
 
-        {/* CTA Button Group */}
+        {/* Primary Call To Action */}
         <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <Link
             href="/"
             onClick={markSeen}
             id="hero-start-cta"
-            className="group flex h-14 w-full sm:w-auto items-center justify-center gap-3 rounded-full bg-accent px-9 text-base font-extrabold text-white shadow-[0_0_35px_rgba(46,155,255,0.45)] transition duration-200 hover:scale-[1.04] hover:shadow-[0_0_45px_rgba(46,155,255,0.7)] active:scale-95"
+            className="group flex h-14 w-full sm:w-auto items-center justify-center gap-3 rounded-full bg-accent px-10 text-base font-extrabold text-white shadow-[0_0_35px_rgba(46,155,255,0.45)] transition duration-200 hover:scale-[1.04] hover:shadow-[0_0_45px_rgba(46,155,255,0.7)] active:scale-95"
           >
-            Start Winter Arc Challenge
+            Start Winter Arc Tracker
             <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
 
-          <button
-            type="button"
-            onClick={() => setShowVideoModal(true)}
-            id="hero-watch-story-btn"
-            className="flex h-14 w-full sm:w-auto items-center justify-center gap-2.5 rounded-full border border-border bg-card/70 px-7 text-sm font-bold text-foreground backdrop-blur transition hover:bg-card hover:border-accent/40"
+          <a
+            href="#how-it-works"
+            className="flex h-14 w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-border bg-card/70 px-7 text-sm font-bold text-foreground backdrop-blur transition hover:bg-card hover:border-accent/40"
           >
-            <Play className="h-4 w-4 fill-accent text-accent" />
-            Watch Challenge Video
-          </button>
+            How To Use This App <ChevronRight className="h-4 w-4" />
+          </a>
         </div>
 
         {/* Trust Points */}
         <div className="mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs font-semibold text-muted">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-good" />
-            <span>100% Free Demo Access</span>
+            <span>100% Free Instant Access</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-good" />
-            <span>Zero Sign-Up Required to Start</span>
+            <span>Zero Sign-Up Required</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-good" />
-            <span>Installable Offline PWA</span>
+            <span>Works Offline (Installable PWA)</span>
           </div>
         </div>
 
@@ -247,21 +280,79 @@ export default function IntroLandingPage() {
             <Link
               href="/"
               onClick={markSeen}
-              className="absolute bottom-5 right-5 flex items-center gap-2 rounded-full bg-accent/90 px-4 py-2 text-xs font-extrabold text-white backdrop-blur shadow-lg transition hover:bg-accent"
+              className="absolute bottom-5 right-5 flex items-center gap-2 rounded-full bg-accent/95 px-5 py-2.5 text-xs sm:text-sm font-extrabold text-white backdrop-blur shadow-lg transition hover:bg-accent hover:scale-105 active:scale-95"
             >
-              Open Interactive View <ChevronRight className="h-4 w-4" />
+              Open Live Dashboard <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* HOW TO USE / STEP BY STEP USER GUIDE SECTION */}
+      <section id="how-it-works" className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 scroll-mt-20">
+        <div className="text-center">
+          <span className="text-xs font-black tracking-[0.25em] text-accent uppercase">User Guide</span>
+          <h2 className="mt-3 text-3xl font-black sm:text-5xl">How To Use The Tracker</h2>
+          <p className="mt-4 text-sm sm:text-base text-muted max-w-xl mx-auto">
+            Everything is designed for speed. You won't spend 15 minutes logging; each habit takes 2 seconds so you can get back to executing.
+          </p>
+        </div>
+
+        <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
+          {HOW_IT_WORKS_STEPS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.step}
+                className="relative flex flex-col justify-between rounded-3xl border border-border/80 bg-card/70 p-7 shadow-lg backdrop-blur-xl transition hover:border-accent/40 hover:bg-card"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-soft text-sm font-black text-accent">
+                      {item.step}
+                    </span>
+                    <span className="rounded-full border border-border bg-card-2/60 px-3 py-1 text-[11px] font-bold text-muted">
+                      {item.badge}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-6 text-xl font-black text-foreground">{item.title}</h3>
+
+                  <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-accent-soft/70 px-2.5 py-1 text-xs font-semibold text-accent">
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{item.action}</span>
+                  </div>
+
+                  <p className="mt-4 text-sm leading-relaxed text-muted">{item.desc}</p>
+                </div>
+
+                <div className="mt-6 border-t border-border/60 pt-4">
+                  <p className="text-xs font-semibold text-foreground/80">{item.tip}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Visual action prompt */}
+        <div className="mt-12 flex items-center justify-center">
+          <Link
+            href="/"
+            onClick={markSeen}
+            className="flex items-center gap-2 rounded-full bg-foreground px-8 py-3.5 text-sm font-bold text-background transition hover:opacity-90"
+          >
+            Ready? Open Tracker & Try Step 1 <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
       {/* Feature Showcase Tab Section */}
       <section className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
         <div className="text-center">
-          <span className="text-xs font-black tracking-[0.25em] text-accent uppercase">Engineered For Consistency</span>
-          <h2 className="mt-3 text-3xl font-black sm:text-5xl">Every Aspect of Your Routine. Covered.</h2>
+          <span className="text-xs font-black tracking-[0.25em] text-accent uppercase">Everything Inside</span>
+          <h2 className="mt-3 text-3xl font-black sm:text-5xl">Explore The 5 Core Modules</h2>
           <p className="mt-4 text-sm sm:text-base text-muted max-w-xl mx-auto">
-            Switch between purpose-built modules designed to remove decision fatigue and keep you locked in for 90 consecutive days.
+            Click through each module below to preview what you'll be tracking every day.
           </p>
         </div>
 
@@ -301,8 +392,14 @@ export default function IntroLandingPage() {
               {FEATURES[activeFeature].desc}
             </p>
 
+            {/* How to use this specific module */}
+            <div className="mt-6 rounded-2xl border border-accent/25 bg-accent-soft/40 p-3.5">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-accent">How You Use It:</span>
+              <p className="mt-1 text-xs font-medium text-foreground/90">{FEATURES[activeFeature].userAction}</p>
+            </div>
+
             {/* Stat Pill */}
-            <div className="mt-8 flex items-center gap-4 rounded-2xl border border-border/60 bg-card-2/50 p-4">
+            <div className="mt-6 flex items-center gap-4 rounded-2xl border border-border/60 bg-card-2/50 p-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-white">
                 <Target className="h-6 w-6" />
               </div>
@@ -377,7 +474,7 @@ export default function IntroLandingPage() {
         </div>
       </section>
 
-      {/* Bottom Sticky-Feeling High Converting Final Call-to-Action */}
+      {/* Bottom Final Call-to-Action */}
       <section className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-24">
         <div className="relative overflow-hidden rounded-3xl border border-accent/40 bg-gradient-to-br from-card via-card-2 to-card p-8 sm:p-14 text-center shadow-2xl backdrop-blur-2xl">
           <div
@@ -400,7 +497,7 @@ export default function IntroLandingPage() {
               id="footer-start-cta"
               className="flex h-14 w-full sm:w-auto items-center justify-center gap-3 rounded-full bg-accent px-10 text-base font-extrabold text-white shadow-[0_0_30px_rgba(46,155,255,0.5)] transition duration-200 hover:scale-105 active:scale-95"
             >
-              Start Winter Arc Now <ArrowRight className="h-5 w-5" />
+              Start Winter Arc Tracker <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
 
@@ -423,46 +520,6 @@ export default function IntroLandingPage() {
           </div>
         </div>
       </footer>
-
-      {/* Video Modal */}
-      {showVideoModal && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200"
-          onClick={() => setShowVideoModal(false)}
-        >
-          <div
-            className="relative w-full max-w-4xl overflow-hidden rounded-3xl border border-border bg-card p-2 sm:p-4 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 px-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-accent">
-                Winter Arc Challenge Story
-              </span>
-              <button
-                type="button"
-                onClick={() => setShowVideoModal(false)}
-                className="rounded-full bg-card-2 p-1.5 text-muted hover:text-foreground"
-              >
-                ✕
-              </button>
-            </div>
-            <video
-              className="aspect-video w-full rounded-2xl bg-black object-cover"
-              controls
-              autoPlay
-              playsInline
-              preload="auto"
-              poster="/video-assets/winter-arc-ad-poster.png"
-            >
-              <source src="/winter-arc-ad.mp4" type="video/mp4" />
-              <track kind="captions" srcLang="en" label="English" src="/video-assets/captions.vtt" default />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
