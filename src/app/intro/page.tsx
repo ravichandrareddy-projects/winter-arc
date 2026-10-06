@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -49,7 +49,6 @@ const ONBOARDING_STEPS = [
     tip: "Recommendation: Start with Sleep + Hydration as your core anchor.",
     icon: ListTodo,
     color: "#2e9bff",
-    accentGlow: "rgba(46, 155, 255, 0.4)",
   },
   {
     step: "02",
@@ -60,7 +59,6 @@ const ONBOARDING_STEPS = [
     tip: "Real-time visual completion rings show instant feedback as you hit 100%.",
     icon: MousePointerClick,
     color: "#34d399",
-    accentGlow: "rgba(52, 211, 153, 0.4)",
   },
   {
     step: "03",
@@ -71,7 +69,6 @@ const ONBOARDING_STEPS = [
     tip: "Rule of the Arc: Never allow two missed days in a row.",
     icon: Flame,
     color: "#f59e0b",
-    accentGlow: "rgba(245, 158, 11, 0.4)",
   },
 ];
 
@@ -150,12 +147,12 @@ function QuickInteractiveDemo() {
             <Zap className="h-4 w-4" />
           </span>
           <div>
-            <h4 className="text-base font-bold text-foreground">Interactive Demo: Test 1-Tap Logging</h4>
+            <h4 className="text-base font-bold text-foreground">Interactive Sandbox: Test 1-Tap Logging</h4>
             <p className="text-xs text-muted">Try clicking these buttons to see how fast logging works</p>
           </div>
         </div>
         <span className="rounded-full border border-accent/40 bg-accent-soft px-3 py-1 text-xs font-mono font-bold text-accent">
-          Live Sandbox
+          Instant Live Feedback
         </span>
       </div>
 
@@ -171,7 +168,6 @@ function QuickInteractiveDemo() {
               <span className="text-2xl font-black text-foreground">{waterCount.toFixed(1)}L</span>
               <span className="text-xs text-muted">/ 3.0L</span>
             </div>
-            {/* Progress bar */}
             <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-border">
               <div
                 className="h-full bg-accent transition-all duration-300"
@@ -266,13 +262,13 @@ export default function IntroOnboardingPage() {
       {/* Top Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <WinterArcLogo className="h-6 w-9 text-accent transition-transform group-hover:scale-105" />
+          <Link href="/" className="flex items-center gap-3 group">
+            <WinterArcLogo className="h-8 w-8 text-accent transition-transform group-hover:scale-105" />
             <span className="text-lg font-black tracking-tight">
               WINTER<span className="text-accent ml-1">ARC</span>
             </span>
             <span className="ml-2 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-0.5 text-[9px] font-mono font-bold tracking-widest text-accent uppercase">
-              Onboarding Guide
+              Official Portal
             </span>
           </Link>
 
@@ -290,23 +286,51 @@ export default function IntroOnboardingPage() {
       </header>
 
       {/* Main Intro Info Content */}
-      <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
-        {/* Intro Header */}
-        <div className="text-center intro-rise">
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1 text-xs font-mono font-bold tracking-widest uppercase text-accent animate-float">
-            <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-            <span>HOW TO USE WINTER ARC</span>
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-14">
+        {/* ================================================================ */}
+        {/* CRAZY CINEMATIC HERO ARTWORK DISPLAY                             */}
+        {/* ================================================================ */}
+        <section className="relative flex flex-col items-center text-center">
+          {/* Animated Ambient Light Rays behind the Emblem */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 h-[380px] w-[380px] sm:h-[500px] sm:w-[500px] rounded-full bg-gradient-to-tr from-sky-500/25 via-blue-600/30 to-indigo-500/25 blur-[90px] animate-ray-sweep"
+          />
+
+          {/* Master Emblem Centerpiece with Floating Physics & Pulse Glow */}
+          <div className="relative z-10 mx-auto w-full max-w-[340px] sm:max-w-[420px] md:max-w-[460px] aspect-square rounded-[36px] overflow-hidden p-1 shadow-[0_0_80px_rgba(46,155,255,0.35)] animate-pulse-glow">
+            <div className="relative h-full w-full rounded-[34px] overflow-hidden border border-white/20 bg-black/80">
+              <Image
+                src="/winter-arc-hero-art.png"
+                alt="Winter Arc Official Master Artwork"
+                fill
+                priority
+                sizes="(max-width: 640px) 340px, 460px"
+                className="object-cover object-center transition duration-700 hover:scale-105"
+              />
+              {/* Subtle Atmospheric Glass Rim Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+            </div>
           </div>
-          <h1 className="mt-6 text-3xl font-black sm:text-5xl md:text-6xl tracking-tight text-foreground">
-            Master the Protocol in 3 Simple Steps.
-          </h1>
-          <p className="mt-4 max-w-xl mx-auto text-sm sm:text-base text-muted leading-relaxed">
-            Read this short interactive guide before entering your dashboard. Winter Arc takes less than 30 seconds of your day so you spend your energy executing, not logging.
-          </p>
-        </div>
+
+          {/* Badges and Subtext */}
+          <div className="relative z-10 mt-8 flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1.5 text-xs font-mono font-bold tracking-widest uppercase text-accent shadow-lg animate-float">
+              <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+              <span>THE OFFICIAL PROTOCOL</span>
+            </div>
+
+            <h1 className="mt-5 text-3xl font-black sm:text-5xl md:text-6xl tracking-tight text-foreground">
+              Master the Protocol in 3 Simple Steps.
+            </h1>
+            <p className="mt-4 max-w-xl mx-auto text-sm sm:text-base text-muted leading-relaxed">
+              Read this short interactive guide before entering your dashboard. Winter Arc takes less than 30 seconds of your day so you spend your energy executing, not logging.
+            </p>
+          </div>
+        </section>
 
         {/* 3 Step Instruction Cards with Animated Glow Borders */}
-        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
           {ONBOARDING_STEPS.map((s) => {
             const Icon = s.icon;
             return (
@@ -422,7 +446,7 @@ export default function IntroOnboardingPage() {
 
         {/* Final Ready Call to Action */}
         <div className="mt-16 text-center rounded-3xl border border-accent/40 bg-gradient-to-br from-card via-card-2 to-card p-10 sm:p-14 shadow-2xl backdrop-blur-2xl">
-          <WinterArcLogo className="mx-auto h-12 w-16 text-accent animate-float" />
+          <WinterArcLogo className="mx-auto h-12 w-12 text-accent animate-float" />
           <h2 className="mt-5 text-3xl sm:text-4xl font-black text-foreground">
             You Are Ready. Lock In.
           </h2>

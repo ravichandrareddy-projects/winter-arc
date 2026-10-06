@@ -235,3 +235,35 @@ body {
   animation: float-subtle 4.5s ease-in-out infinite;
 }
 
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 25px rgba(46, 155, 255, 0.45)) drop-shadow(0 0 60px rgba(56, 189, 248, 0.25));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 45px rgba(46, 155, 255, 0.75)) drop-shadow(0 0 95px rgba(99, 102, 241, 0.4));
+    transform: scale(1.02);
+  }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 5s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 35s linear infinite;
+}
+
+@keyframes ray-sweep {
+  0% { transform: rotate(0deg) scale(0.9); opacity: 0.3; }
+  50% { transform: rotate(180deg) scale(1.1); opacity: 0.6; }
+  100% { transform: rotate(360deg) scale(0.9); opacity: 0.3; }
+}
+.animate-ray-sweep {
+  animation: ray-sweep 20s linear infinite;
+}
+
+
