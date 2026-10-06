@@ -430,20 +430,20 @@ export default function LandingPage() {
         {/* Small Eyebrow */}
         <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1.5 text-xs font-mono font-bold tracking-[0.15em] uppercase text-accent shadow-sm backdrop-blur">
           <span className="h-2 w-2 rounded-full bg-accent animate-ping" />
-          <span>The Best Winter Arc Tracker</span>
+          <span>Personal Progress System</span>
         </div>
 
-        {/* Main Headline */}
+        {/* Primary Single H1 for Search & Users */}
         <h1 className="mt-8 max-w-4xl text-4xl font-black tracking-[-0.03em] sm:text-6xl md:text-7xl lg:text-8xl leading-[1.08] text-foreground">
-          SEE WHAT YOU&apos;RE <br className="hidden sm:block" />
-          <span className="bg-gradient-to-r from-accent via-sky-400 to-indigo-400 bg-clip-text text-transparent">
-            BECOMING.
+          Winter Arc Tracker
+          <span className="mt-3 block text-2xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-accent via-sky-400 to-indigo-400 bg-clip-text text-transparent tracking-tight">
+            See What You&apos;re Becoming.
           </span>
         </h1>
 
-        {/* Supporting Text */}
+        {/* Supporting Copy Naturally Explaining the System */}
         <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">
-          The best Winter Arc tracker and 90-day discipline protocol. Track your sleep, wake time, fitness, nutrition, and daily habits — 100% on-device, private, and free.
+          A personal progress tracking app designed to help you build consistency over your 90-day arc. Track sleep, wake-up schedule, workouts, meals, daily habits, and long-term trends — completely on-device, private, and free.
         </p>
 
         {/* Action CTAs */}
