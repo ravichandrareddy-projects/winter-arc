@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -26,6 +26,8 @@ import {
   ListTodo,
   Layers,
   Compass,
+  Play,
+  Check,
 } from "lucide-react";
 import { WinterArcLogo } from "@/components/brand";
 
@@ -47,6 +49,7 @@ const ONBOARDING_STEPS = [
     tip: "Recommendation: Start with Sleep + Hydration as your core anchor.",
     icon: ListTodo,
     color: "#2e9bff",
+    accentGlow: "rgba(46, 155, 255, 0.4)",
   },
   {
     step: "02",
@@ -57,6 +60,7 @@ const ONBOARDING_STEPS = [
     tip: "Real-time visual completion rings show instant feedback as you hit 100%.",
     icon: MousePointerClick,
     color: "#34d399",
+    accentGlow: "rgba(52, 211, 153, 0.4)",
   },
   {
     step: "03",
@@ -67,65 +71,208 @@ const ONBOARDING_STEPS = [
     tip: "Rule of the Arc: Never allow two missed days in a row.",
     icon: Flame,
     color: "#f59e0b",
+    accentGlow: "rgba(245, 158, 11, 0.4)",
   },
 ];
 
 const MODULE_GUIDES = [
   {
+    id: "sleep",
     title: "Sleep & Circadian Rhythm",
+    tag: "Recovery",
     icon: Moon,
     color: "#818cf8",
     img: "/video-assets/real/04_sleep.png",
+    stat: "8.2 hrs",
+    statDesc: "Average deep sleep target window",
     how: "Log your bedtime and morning wake time. The system calculates your sleep latency, quality scores, and displays your circadian consistency.",
   },
   {
+    id: "wake",
     title: "Wake Up Discipline",
+    tag: "Circadian",
     icon: Sun,
     color: "#fbbf24",
     img: "/video-assets/real/05_wake_up.png",
+    stat: "05:30 AM",
+    statDesc: "Fixed sunrise wake-up lock-in",
     how: "Hit the morning check-in to confirm your rise time without snooze excuses. Lock in sunrise mental clarity.",
   },
   {
+    id: "fitness",
     title: "Fitness & Training Splits",
+    tag: "Hypertrophy",
     icon: Dumbbell,
     color: "#34d399",
     img: "/video-assets/real/06_fitness.png",
+    stat: "100%",
+    statDesc: "Workout compliance milestone",
     how: "Check off your daily lifts, track reps and weights, log daily steps, and record physique milestone photos securely.",
   },
   {
+    id: "food",
     title: "Food & Nutrition Fuel",
+    tag: "Metabolic",
     icon: UtensilsCrossed,
     color: "#f97316",
     img: "/video-assets/real/07_food.png",
+    stat: "160g",
+    statDesc: "Daily protein target intake",
     how: "Log breakfast, lunch, and dinner to stay in your calorie and protein targets with zero guesswork.",
   },
   {
+    id: "progress",
     title: "Progress & Analytics",
+    tag: "Intelligence",
     icon: TrendingUp,
     color: "#2e9bff",
     img: "/video-assets/real/08_progress.png",
+    stat: "+34%",
+    statDesc: "Weekly consistency trajectory",
     how: "Visit the Progress tab to inspect radar charts, weekly consistency deltas, and streak achievements over your 90-day arc.",
   },
 ];
+
+// Interactive Quick Simulator Card inside Intro
+function QuickInteractiveDemo() {
+  const [waterCount, setWaterCount] = useState(1.5);
+  const [workoutChecked, setWorkoutChecked] = useState(false);
+  const [sleepLogged, setSleepLogged] = useState(false);
+
+  const goal = 3.0;
+  const pct = Math.min(100, Math.round((waterCount / goal) * 100));
+
+  return (
+    <div className="glow-card rounded-3xl border border-accent/40 bg-card/85 p-6 shadow-2xl backdrop-blur-2xl sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-4">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent-soft text-accent">
+            <Zap className="h-4 w-4" />
+          </span>
+          <div>
+            <h4 className="text-base font-bold text-foreground">Interactive Demo: Test 1-Tap Logging</h4>
+            <p className="text-xs text-muted">Try clicking these buttons to see how fast logging works</p>
+          </div>
+        </div>
+        <span className="rounded-full border border-accent/40 bg-accent-soft px-3 py-1 text-xs font-mono font-bold text-accent">
+          Live Sandbox
+        </span>
+      </div>
+
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {/* Habit 1: Hydration Increment */}
+        <div className="flex flex-col justify-between rounded-2xl border border-border/80 bg-card-2/60 p-4 transition hover:border-accent/50">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-muted uppercase">Hydration</span>
+              <Droplets className="h-4 w-4 text-sky-400" />
+            </div>
+            <div className="mt-3 flex items-baseline gap-1">
+              <span className="text-2xl font-black text-foreground">{waterCount.toFixed(1)}L</span>
+              <span className="text-xs text-muted">/ 3.0L</span>
+            </div>
+            {/* Progress bar */}
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-border">
+              <div
+                className="h-full bg-accent transition-all duration-300"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setWaterCount((prev) => +(Math.min(3.0, prev + 0.5).toFixed(1)))}
+            className="mt-4 flex h-9 w-full items-center justify-center gap-1.5 rounded-xl bg-accent text-xs font-bold text-white shadow-sm transition hover:scale-102 active:scale-95 cursor-pointer"
+          >
+            <PlusCircle className="h-3.5 w-3.5" /> Tap +0.5L
+          </button>
+        </div>
+
+        {/* Habit 2: Workout Check */}
+        <div className="flex flex-col justify-between rounded-2xl border border-border/80 bg-card-2/60 p-4 transition hover:border-emerald-500/50">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-muted uppercase">Push Day Lift</span>
+              <Dumbbell className="h-4 w-4 text-emerald-400" />
+            </div>
+            <div className="mt-3 flex items-baseline gap-1">
+              <span className="text-2xl font-black text-foreground">
+                {workoutChecked ? "Completed" : "Pending"}
+              </span>
+            </div>
+            <p className="mt-2 text-[11px] text-muted">Chest & Triceps progressive overload split</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setWorkoutChecked((prev) => !prev)}
+            className={`mt-4 flex h-9 w-full items-center justify-center gap-1.5 rounded-xl text-xs font-bold transition hover:scale-102 active:scale-95 cursor-pointer ${
+              workoutChecked
+                ? "bg-emerald-500 text-white"
+                : "border border-border bg-card text-foreground"
+            }`}
+          >
+            {workoutChecked ? (
+              <>
+                <Check className="h-3.5 w-3.5" /> Done for Today
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="h-3.5 w-3.5 text-muted" /> Mark Completed
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Habit 3: Sleep Sync */}
+        <div className="flex flex-col justify-between rounded-2xl border border-border/80 bg-card-2/60 p-4 transition hover:border-indigo-400/50">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-muted uppercase">Circadian Lock</span>
+              <Moon className="h-4 w-4 text-indigo-400" />
+            </div>
+            <div className="mt-3 flex items-baseline gap-1">
+              <span className="text-2xl font-black text-foreground">
+                {sleepLogged ? "8.0 hrs" : "--"}
+              </span>
+              <span className="text-xs text-muted">logged</span>
+            </div>
+            <p className="mt-2 text-[11px] text-muted">Consistent 10:30 PM bedtime locked</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSleepLogged((prev) => !prev)}
+            className={`mt-4 flex h-9 w-full items-center justify-center gap-1.5 rounded-xl text-xs font-bold transition hover:scale-102 active:scale-95 cursor-pointer ${
+              sleepLogged
+                ? "bg-indigo-500 text-white"
+                : "border border-border bg-card text-foreground"
+            }`}
+          >
+            {sleepLogged ? "✓ Bedtime Recorded" : "Quick Log Bedtime"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function IntroOnboardingPage() {
   const [activeModule, setActiveModule] = useState(0);
 
   return (
     <div className="relative min-h-dvh overflow-x-hidden bg-background text-foreground antialiased selection:bg-accent/25 selection:text-accent font-sans">
-      {/* Background Mountain Backdrop */}
+      {/* Background Mountain Backdrop & Dynamic Aurora */}
       <div aria-hidden="true" className="app-bg fixed inset-0 pointer-events-none" />
 
       {/* Top Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <WinterArcLogo className="h-6 w-9 text-accent" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <WinterArcLogo className="h-6 w-9 text-accent transition-transform group-hover:scale-105" />
             <span className="text-lg font-black tracking-tight">
               WINTER<span className="text-accent ml-1">ARC</span>
             </span>
             <span className="ml-2 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-0.5 text-[9px] font-mono font-bold tracking-widest text-accent uppercase">
-              Onboarding
+              Onboarding Guide
             </span>
           </Link>
 
@@ -134,7 +281,7 @@ export default function IntroOnboardingPage() {
             href="/"
             onClick={markSeenAndEnter}
             id="intro-top-enter-btn"
-            className="flex items-center gap-2 rounded-xl border border-accent/50 bg-gradient-to-r from-accent via-sky-500 to-accent px-5 py-2 text-xs sm:text-sm font-extrabold text-white shadow-[0_0_24px_rgba(46,155,255,0.35)] transition duration-200 hover:scale-103 active:scale-95"
+            className="flex items-center gap-2 rounded-xl border border-accent/50 bg-gradient-to-r from-accent via-sky-500 to-accent px-5 py-2 text-xs sm:text-sm font-extrabold text-white shadow-[0_0_24px_rgba(46,155,255,0.35)] transition duration-200 hover:scale-104 active:scale-95"
           >
             <span>ENTER TRACKER</span>
             <ArrowRight className="h-4 w-4" />
@@ -145,8 +292,8 @@ export default function IntroOnboardingPage() {
       {/* Main Intro Info Content */}
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
         {/* Intro Header */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1 text-xs font-mono font-bold tracking-widest uppercase text-accent">
+        <div className="text-center intro-rise">
+          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-4 py-1 text-xs font-mono font-bold tracking-widest uppercase text-accent animate-float">
             <Sparkles className="h-3.5 w-3.5 animate-pulse" />
             <span>HOW TO USE WINTER ARC</span>
           </div>
@@ -154,18 +301,18 @@ export default function IntroOnboardingPage() {
             Master the Protocol in 3 Simple Steps.
           </h1>
           <p className="mt-4 max-w-xl mx-auto text-sm sm:text-base text-muted leading-relaxed">
-            Read this short guide before entering your dashboard. Winter Arc is engineered to take less than 30 seconds of your day so you spend your energy executing, not logging.
+            Read this short interactive guide before entering your dashboard. Winter Arc takes less than 30 seconds of your day so you spend your energy executing, not logging.
           </p>
         </div>
 
-        {/* 3 Step Instruction Cards */}
+        {/* 3 Step Instruction Cards with Animated Glow Borders */}
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
           {ONBOARDING_STEPS.map((s) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.step}
-                className="flex flex-col justify-between rounded-3xl border border-border/80 bg-card/75 p-7 shadow-xl backdrop-blur-xl transition hover:border-accent/40 hover:bg-card"
+                className="glow-card flex flex-col justify-between rounded-3xl border border-border/80 bg-card/80 p-7 shadow-xl backdrop-blur-xl transition hover:border-accent/40"
               >
                 <div>
                   <div className="flex items-center justify-between">
@@ -198,8 +345,13 @@ export default function IntroOnboardingPage() {
           })}
         </div>
 
+        {/* Interactive Quick Simulator Demo */}
+        <div className="mt-16">
+          <QuickInteractiveDemo />
+        </div>
+
         {/* Modules Breakdown Section */}
-        <section className="mt-20 rounded-3xl border border-border/80 bg-card/70 p-6 sm:p-10 shadow-xl backdrop-blur-xl">
+        <section className="mt-20 glow-card rounded-3xl border border-border/80 bg-card/80 p-6 sm:p-10 shadow-xl backdrop-blur-xl">
           <div className="text-center sm:text-left mb-8">
             <span className="text-xs font-mono font-bold tracking-[0.2em] text-accent uppercase">
               Dashboard Modules
@@ -208,7 +360,7 @@ export default function IntroOnboardingPage() {
               What You&apos;ll Be Tracking
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-muted">
-              Select any tab below to understand how each specialized tracker works.
+              Select any tab below to inspect live screenshots and understand how each specialized tracker works.
             </p>
           </div>
 
@@ -220,8 +372,9 @@ export default function IntroOnboardingPage() {
               return (
                 <button
                   key={mod.title}
+                  type="button"
                   onClick={() => setActiveModule(idx)}
-                  className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+                  className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
                     isActive
                       ? "bg-accent text-white shadow-md scale-102"
                       : "border border-border/80 bg-card-2/50 text-muted hover:text-foreground hover:bg-card-2"
@@ -237,16 +390,21 @@ export default function IntroOnboardingPage() {
           {/* Active Module Details */}
           <div className="mt-8 grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
             <div className="lg:col-span-5">
-              <h3 className="text-2xl font-black text-foreground">{MODULE_GUIDES[activeModule].title}</h3>
+              <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-extrabold text-accent">
+                {MODULE_GUIDES[activeModule].tag}
+              </span>
+              <h3 className="mt-4 text-2xl font-black text-foreground">{MODULE_GUIDES[activeModule].title}</h3>
               <p className="mt-4 text-sm leading-relaxed text-muted">
                 {MODULE_GUIDES[activeModule].how}
               </p>
 
+              {/* Key Stat Badge */}
               <div className="mt-6 rounded-2xl border border-accent/25 bg-accent-soft/40 p-4">
-                <span className="text-xs font-mono font-bold text-accent uppercase">Daily Execution:</span>
-                <p className="mt-1 text-xs text-foreground/90">
-                  Open this tab daily, tap the action buttons to log values, and observe your consistency rise.
-                </p>
+                <span className="text-xs font-mono font-bold text-accent uppercase">Target Baseline:</span>
+                <div className="mt-1 flex items-baseline gap-2">
+                  <span className="text-xl font-black text-foreground">{MODULE_GUIDES[activeModule].stat}</span>
+                  <span className="text-xs text-muted">{MODULE_GUIDES[activeModule].statDesc}</span>
+                </div>
               </div>
             </div>
 
@@ -256,7 +414,7 @@ export default function IntroOnboardingPage() {
                 alt={MODULE_GUIDES[activeModule].title}
                 fill
                 unoptimized
-                className="object-cover object-top"
+                className="object-cover object-top transition duration-500 hover:scale-103"
               />
             </div>
           </div>
@@ -264,7 +422,7 @@ export default function IntroOnboardingPage() {
 
         {/* Final Ready Call to Action */}
         <div className="mt-16 text-center rounded-3xl border border-accent/40 bg-gradient-to-br from-card via-card-2 to-card p-10 sm:p-14 shadow-2xl backdrop-blur-2xl">
-          <WinterArcLogo className="mx-auto h-12 w-16 text-accent" />
+          <WinterArcLogo className="mx-auto h-12 w-16 text-accent animate-float" />
           <h2 className="mt-5 text-3xl sm:text-4xl font-black text-foreground">
             You Are Ready. Lock In.
           </h2>

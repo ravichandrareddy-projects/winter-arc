@@ -651,14 +651,14 @@ export default function LandingPage() {
         {/* Feature Cards Grid (Using Real Screenshots) */}
         <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">
           {/* SLEEP CARD */}
-          <div className="flex flex-col rounded-3xl border border-border/80 bg-card/70 overflow-hidden shadow-xl backdrop-blur-xl">
-            <div className="relative aspect-[16/9] w-full bg-black/60">
+          <div className="glow-card flex flex-col rounded-3xl border border-border/80 bg-card/75 overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="relative aspect-[16/9] w-full bg-black/60 overflow-hidden">
               <Image
                 src="/video-assets/real/04_sleep.png"
                 alt="Winter Arc Sleep Screen"
                 fill
                 unoptimized
-                className="object-cover object-top"
+                className="object-cover object-top transition duration-700 hover:scale-104"
               />
             </div>
             <div className="p-6">
@@ -673,14 +673,14 @@ export default function LandingPage() {
           </div>
 
           {/* WAKE UP CARD */}
-          <div className="flex flex-col rounded-3xl border border-border/80 bg-card/70 overflow-hidden shadow-xl backdrop-blur-xl">
-            <div className="relative aspect-[16/9] w-full bg-black/60">
+          <div className="glow-card flex flex-col rounded-3xl border border-border/80 bg-card/75 overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="relative aspect-[16/9] w-full bg-black/60 overflow-hidden">
               <Image
                 src="/video-assets/real/05_wake_up.png"
                 alt="Winter Arc Wake Up Screen"
                 fill
                 unoptimized
-                className="object-cover object-top"
+                className="object-cover object-top transition duration-700 hover:scale-104"
               />
             </div>
             <div className="p-6">
@@ -695,14 +695,14 @@ export default function LandingPage() {
           </div>
 
           {/* FITNESS CARD */}
-          <div className="flex flex-col rounded-3xl border border-border/80 bg-card/70 overflow-hidden shadow-xl backdrop-blur-xl">
-            <div className="relative aspect-[16/9] w-full bg-black/60">
+          <div className="glow-card flex flex-col rounded-3xl border border-border/80 bg-card/75 overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="relative aspect-[16/9] w-full bg-black/60 overflow-hidden">
               <Image
                 src="/video-assets/real/06_fitness.png"
                 alt="Winter Arc Fitness Screen"
                 fill
                 unoptimized
-                className="object-cover object-top"
+                className="object-cover object-top transition duration-700 hover:scale-104"
               />
             </div>
             <div className="p-6">
@@ -717,14 +717,14 @@ export default function LandingPage() {
           </div>
 
           {/* FOOD CARD */}
-          <div className="flex flex-col rounded-3xl border border-border/80 bg-card/70 overflow-hidden shadow-xl backdrop-blur-xl">
-            <div className="relative aspect-[16/9] w-full bg-black/60">
+          <div className="glow-card flex flex-col rounded-3xl border border-border/80 bg-card/75 overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="relative aspect-[16/9] w-full bg-black/60 overflow-hidden">
               <Image
                 src="/video-assets/real/07_food.png"
                 alt="Winter Arc Food Screen"
                 fill
                 unoptimized
-                className="object-cover object-top"
+                className="object-cover object-top transition duration-700 hover:scale-104"
               />
             </div>
             <div className="p-6">
@@ -738,6 +738,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+
 
         {/* Live Interactive Motion Graph Suite (Requested Increase/Decrease Motions) */}
         <div className="mt-16">
