@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 const CANONICAL_SITE_URL = "https://winterarc.indevs.in";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const now = new Date().toISOString().split("T")[0];
 
   return [
     {

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /auth/
+Disallow: /api/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://winterarc.indevs.in/sitemap.xml
