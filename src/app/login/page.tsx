@@ -6,6 +6,8 @@ import NextLink from "next/link";
 import { ArrowLeft, Check, Eye, EyeOff, Sparkles } from "lucide-react";
 import { WinterArcLogo } from "@/components/brand";
 import { useAuth } from "@/lib/auth";
+import { setHasSeenIntro } from "@/lib/intro-storage";
+import { safeInternalPath } from "@/lib/navigation";
 
 type Mode = "signin" | "signup" | "forgot" | "verify";
 
@@ -20,7 +22,7 @@ export default function LoginPage() {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextRoute = searchParams?.get("next") || "/";
+  const nextRoute = safeInternalPath(searchParams?.get("next"), "/");
 
   const { status, user, signIn, signUp, signInGoogle, resetPassword } = useAuth();
 
@@ -379,6 +381,7 @@ function LoginForm() {
 
                 <NextLink
                   href="/"
+                  onClick={() => setHasSeenIntro(true)}
                   className="flex h-11 w-full items-center justify-center gap-2 rounded-full border border-dashed border-border text-xs font-semibold text-muted hover:text-foreground hover:border-foreground/40 transition-colors"
                 >
                   <Sparkles className="h-3.5 w-3.5 text-accent" />

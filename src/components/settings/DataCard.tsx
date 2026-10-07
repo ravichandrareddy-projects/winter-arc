@@ -3,8 +3,8 @@
 import { useRef, useState } from "react";
 import { ChevronRight, Download, ShieldCheck, Trash2, Upload } from "lucide-react";
 import { SettingsCard } from "./SettingsCard";
-import { deletePhotoDB } from "@/lib/photos";
-import { pushAll, wipeCloudData } from "@/lib/sync";
+import { deletePhotoDB, getPhotoBlob, isSafePhotoId, photoDataUrl, restorePhotoBlobs, type PhotoBackup } from "@/lib/photos";
+import { downloadPhoto, pushAll, uploadPhoto, wipeCloudData } from "@/lib/sync";
 import { requireAuth } from "@/lib/auth-guard";
 import { useWinterArc, type BackupData } from "@/lib/store";
 
@@ -25,16 +25,19 @@ function Row({
   label,
   danger,
   onClick,
+  disabled,
 }: {
   icon: React.ReactNode;
   label: string;
   danger?: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-border px-4 py-3 text-left"
+      disabled={disabled}
+      className="flex w-full items-center gap-3 rounded-xl border border-border px-4 py-3 text-left disabled:opacity-50"
     >
       <span className={danger ? "text-red-500" : ""}>{icon}</span>
       <span className={`flex-1 text-sm font-semibold ${danger ? "text-red-500" : ""}`}>
@@ -51,44 +54,60 @@ export function DataCard() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [armed, setArmed] = useState(false);
   const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const backup = () => {
-    const s = useWinterArc.getState();
-    const data: BackupData = {
-      arc: s.arc,
-      profile: s.profile,
-      trackers: s.trackers,
-      entries: s.entries,
-      photoMeta: s.photoMeta,
-      meals: s.meals,
-      nutritionTargets: s.nutritionTargets,
-      preferences: s.preferences,
-      reminders: s.reminders,
-    };
-    const stamp = new Date().toISOString().slice(0, 10);
-    download(`winterarc-backup-${stamp}.json`, JSON.stringify({ app: "winterarc", version: 1, exportedAt: new Date().toISOString(), data }), "application/json");
-    setMsg("Backup downloaded. Photo image files stay on this device and reconnect on restore.");
-    setTimeout(() => setMsg(""), 4000);
+  const backup = async () => {
+    setBusy(true);
+    setMsg("");
+    try {
+      const s = useWinterArc.getState();
+      const data: BackupData = {
+        arc: s.arc,
+        profile: s.profile,
+        trackers: s.trackers,
+        entries: s.entries,
+        photoMeta: s.photoMeta,
+        meals: s.meals,
+        nutritionTargets: s.nutritionTargets,
+        preferences: s.preferences,
+        reminders: s.reminders,
+      };
+      const photos: PhotoBackup[] = [];
+      let missing = 0;
+      for (const meta of s.photoMeta) {
+        const blob = await getPhotoBlob(meta.id) ?? (s.ownerUid ? await downloadPhoto(s.ownerUid, meta.id) : null);
+        if (blob) photos.push({ id: meta.id, dataUrl: await photoDataUrl(blob) });
+        else missing++;
+      }
+      const stamp = new Date().toISOString().slice(0, 10);
+      download(`winterarc-backup-${stamp}.json`, JSON.stringify({ app: "winterarc", version: 2, exportedAt: new Date().toISOString(), data, photos }), "application/json");
+      setMsg(missing ? `Backup downloaded with ${photos.length} photo files. ${missing} photo files were unavailable on this device.` : `Complete backup downloaded, including ${photos.length} photo files.`);
+    } catch {
+      setMsg("Couldn't create the backup. Please try again.");
+    } finally { setBusy(false); }
   };
 
-function sanitizeCSVField(val: unknown): string {
-  let str = String(val ?? "");
-  // OWASP CSV Formula Injection defense: escape formula triggers
-  if (/^[=+\-@\t\r]/.test(str)) {
-    str = `'${str}`;
+  function sanitizeCSVField(val: unknown): string {
+    let str = String(val ?? "");
+    // Escape spreadsheet formula triggers in user-entered fields.
+    if (/^[=+\-@\t\r]/.test(str)) {
+      str = `'${str}`;
+    }
+    return `"${str.replace(/"/g, '""')}"`;
   }
-  return `"${str.replace(/"/g, '""')}"`;
-}
 
   const onRestoreFile = async (f: File | undefined) => {
     if (!f) return;
     try {
-      if (f.size > 10 * 1024 * 1024) {
-        setMsg("Backup file exceeds maximum allowed size (10MB).");
+      if (f.size > 100 * 1024 * 1024) {
+        setMsg("Backup file exceeds maximum allowed size (100MB).");
         return;
       }
       const rawText = await f.text();
       const parsed = JSON.parse(rawText);
+      if (parsed.app && (parsed.app !== "winterarc" || ![1, 2].includes(parsed.version))) throw new Error("bad file");
+      const photos: PhotoBackup[] = parsed.photos ?? [];
+      if (!Array.isArray(photos) || photos.length > 1000) throw new Error("bad photos");
       const data = (parsed?.data ?? parsed) as Partial<BackupData>;
       if (!Array.isArray(data.trackers)) throw new Error("bad file");
       const full: BackupData = {
@@ -99,7 +118,9 @@ function sanitizeCSVField(val: unknown): string {
         },
         trackers: data.trackers.slice(0, 100),
         entries: Array.isArray(data.entries) ? data.entries.slice(0, 20000) : [],
-        photoMeta: Array.isArray(data.photoMeta) ? data.photoMeta.slice(0, 1000) : [],
+        photoMeta: Array.isArray(data.photoMeta)
+          ? data.photoMeta.filter((meta) => isSafePhotoId(meta?.id)).slice(0, 1000)
+          : [],
         meals: Array.isArray(data.meals) ? data.meals.slice(0, 5000) : [],
         nutritionTargets: data.nutritionTargets ?? { calories: 2000, protein: 150, carbs: 220, fats: 70, fiber: 30 },
         preferences: data.preferences ?? { accent: "blue" as const, units: "metric" as const, startTab: "/" as const },
@@ -115,28 +136,41 @@ function sanitizeCSVField(val: unknown): string {
         route: "/settings",
         label: "Restore backup",
         replay: () => {
-          restoreAll(full);
-          const uid = useWinterArc.getState().ownerUid;
-          if (uid) {
-            void pushAll(uid, {
-              arc: full.arc,
-              profile: full.profile,
-              trackers: full.trackers,
-              entries: full.entries,
-              meals: full.meals,
-              photoMeta: full.photoMeta,
-              targets: full.nutritionTargets,
-              preferences: full.preferences,
-              reminders: full.reminders,
-            });
-          }
-          setMsg("Backup restored.");
+          void (async () => {
+            setBusy(true);
+            try {
+              await restorePhotoBlobs(photos);
+              restoreAll(full);
+              const uid = useWinterArc.getState().ownerUid;
+              if (uid) {
+                const restored = useWinterArc.getState();
+                await pushAll(uid, {
+                  arc: restored.arc,
+                  profile: restored.profile,
+                  trackers: restored.trackers,
+                  entries: restored.entries,
+                  meals: restored.meals,
+                  photoMeta: restored.photoMeta,
+                  targets: restored.nutritionTargets,
+                  preferences: restored.preferences,
+                  reminders: restored.reminders,
+                });
+                for (const photo of photos) {
+                  const blob = await getPhotoBlob(photo.id);
+                  if (blob) await uploadPhoto(uid, photo.id, blob);
+                }
+              }
+              const missing = (await Promise.all(full.photoMeta.map((meta) => getPhotoBlob(meta.id)))).filter((blob) => !blob).length;
+              setMsg(missing ? `Backup restored. ${missing} photo files are missing from this older backup; import their originals to recover them.` : "Backup restored, including photo files.");
+            } catch {
+              setMsg("Couldn't restore this backup. Check the file and available device storage.");
+            } finally { setBusy(false); }
+          })();
         },
       });
     } catch {
       setMsg("That file isn't a valid Winter Arc backup.");
     }
-    setTimeout(() => setMsg(""), 4000);
   };
 
   const exportCSV = () => {
@@ -183,13 +217,26 @@ function sanitizeCSVField(val: unknown): string {
       return;
     }
     const uid = useWinterArc.getState().ownerUid;
+    setBusy(true);
     try {
-      if (uid) await wipeCloudData(uid).catch(() => undefined);
-      await deletePhotoDB().catch(() => undefined);
-      window.localStorage.removeItem("winterarc-v2");
-    } finally {
+      if (uid) await wipeCloudData(uid);
+      await deletePhotoDB();
       wipeAll();
-      window.location.reload();
+      if (uid) {
+        const fresh = useWinterArc.getState();
+        await pushAll(uid, {
+          arc: fresh.arc, profile: fresh.profile, trackers: fresh.trackers,
+          entries: fresh.entries, meals: fresh.meals, photoMeta: fresh.photoMeta,
+          targets: fresh.nutritionTargets, preferences: fresh.preferences, reminders: fresh.reminders,
+        });
+      }
+      window.localStorage.setItem("wa-guest", "1");
+      setArmed(false);
+      setMsg("All tracking entries, meals, and photos cleared. Your starter goals are ready for a fresh arc.");
+    } catch {
+      setMsg("Couldn't clear all data. Close other Winter Arc tabs and try again.");
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -211,18 +258,20 @@ function sanitizeCSVField(val: unknown): string {
           </p>
         </div>
 
-        <Row icon={<Upload className="h-4 w-4" />} label="Save Backup File to Device (.json)" onClick={backup} />
+        <Row icon={<Upload className="h-4 w-4" />} label="Save Backup File to Device (.json)" onClick={() => void backup()} disabled={busy} />
         <Row
           icon={<Download className="h-4 w-4" />}
           label="Restore from Backup File (.json)"
           onClick={() => fileRef.current?.click()}
+          disabled={busy}
         />
-        <Row icon={<Download className="h-4 w-4" />} label="Export Data (CSV)" onClick={exportCSV} />
+        <Row icon={<Download className="h-4 w-4" />} label="Export Data (CSV)" onClick={exportCSV} disabled={busy} />
         <Row
           icon={<Trash2 className="h-4 w-4" />}
           label={armed ? "Tap again to confirm wipe" : "Clear All Local Data"}
           danger
           onClick={wipe}
+          disabled={busy}
         />
         <input
           ref={fileRef}
@@ -234,9 +283,10 @@ function sanitizeCSVField(val: unknown): string {
             e.target.value = "";
           }}
         />
-        {msg && <p className="text-xs text-muted">{msg}</p>}
+        {busy && <p role="status" className="text-xs text-muted">Processing your data…</p>}
+        {msg && <p role="status" className="text-xs text-muted">{msg}</p>}
         <p className="text-[11px] text-muted">
-          Your data belongs to you. You can export a physical backup file anytime and save it in your mobile phone&apos;s storage.
+          JSON backups include your logs, settings, and photo files for recovery on another device. CSV exports contain tracking and nutrition records.
         </p>
       </div>
     </SettingsCard>

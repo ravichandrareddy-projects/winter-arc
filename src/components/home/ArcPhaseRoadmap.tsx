@@ -2,19 +2,18 @@
 
 import { useState } from "react";
 import { CheckCircle2, Compass, Flag, Shield, Sparkles } from "lucide-react";
-import { arcDayNumber, todayKey } from "@/lib/dates";
+import { arcDayNumber } from "@/lib/dates";
 import { dispatchToast } from "@/lib/notify";
 import { useWinterArc } from "@/lib/store";
-import { ARC_PHASES, getDailyChallenge } from "@/lib/motivation";
+import { getArcPhase, getArcPhases, getDailyChallenge } from "@/lib/motivation";
 
 export function ArcPhaseRoadmap({ selectedDate }: { selectedDate: string }) {
   const arc = useWinterArc((s) => s.arc);
-  const today = todayKey();
-
   const totalDays = arc ? arcDayNumber(arc.startDate, arc.endDate) : 90;
   const dayN = arc ? Math.min(totalDays, Math.max(1, arcDayNumber(arc.startDate, selectedDate))) : 1;
 
-  const currentPhaseIndex = dayN <= 30 ? 0 : dayN <= 60 ? 1 : 2;
+  const phases = getArcPhases(totalDays);
+  const currentPhaseIndex = getArcPhase(dayN, totalDays).phase - 1;
   const dailyChallenge = getDailyChallenge(dayN);
   const [challengeDone, setChallengeDone] = useState(false);
 
@@ -35,7 +34,7 @@ export function ArcPhaseRoadmap({ selectedDate }: { selectedDate: string }) {
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-base font-extrabold">
           <Compass className="h-5 w-5 text-accent" />
-          90-Day Arc Roadmap & Protocol
+          {totalDays}-Day Arc Roadmap & Protocol
         </h2>
         <span className="text-xs font-bold text-muted">
           Day {dayN} of {totalDays}
@@ -44,10 +43,9 @@ export function ArcPhaseRoadmap({ selectedDate }: { selectedDate: string }) {
 
       {/* 3-Phase Roadmap Grid */}
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        {ARC_PHASES.map((p, idx) => {
+        {phases.map((p, idx) => {
           const isCurrent = idx === currentPhaseIndex;
           const isPast = idx < currentPhaseIndex;
-          const isFuture = idx > currentPhaseIndex;
 
           return (
             <div
@@ -93,7 +91,7 @@ export function ArcPhaseRoadmap({ selectedDate }: { selectedDate: string }) {
                   </span>
                 )}
                 <span className="text-[11px] font-bold text-muted">
-                  {isCurrent ? `Day ${dayN} / 90` : p.dayRange}
+                  {isCurrent ? `Day ${dayN} / ${totalDays}` : p.dayRange}
                 </span>
               </div>
             </div>

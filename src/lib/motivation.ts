@@ -75,6 +75,8 @@ export interface ArcPhase {
   dayRange: string;
   description: string;
   badgeColor: string;
+  startDay?: number;
+  endDay?: number;
 }
 
 export const ARC_PHASES: ArcPhase[] = [
@@ -122,8 +124,18 @@ export function getDailyChallenge(dayNumber: number): DailyChallenge {
   return DAILY_CHALLENGES[Math.abs(dayNumber - 1) % DAILY_CHALLENGES.length];
 }
 
-export function getArcPhase(dayNumber: number): ArcPhase {
-  if (dayNumber <= 30) return ARC_PHASES[0];
-  if (dayNumber <= 60) return ARC_PHASES[1];
-  return ARC_PHASES[2];
+/** Split the configured arc into three nonempty phases (fewer for 1–2 day arcs). */
+export function getArcPhases(totalDays = 90): ArcPhase[] {
+  const days = Math.max(1, Math.floor(totalDays));
+  const count = Math.min(3, days);
+  return ARC_PHASES.slice(0, count).map((phase, index) => {
+    const startDay = Math.floor((index * days) / count) + 1;
+    const endDay = Math.floor(((index + 1) * days) / count);
+    return { ...phase, startDay, endDay, dayRange: `Days ${startDay} – ${endDay}` };
+  });
+}
+
+export function getArcPhase(dayNumber: number, totalDays = 90): ArcPhase {
+  const phases = getArcPhases(totalDays);
+  return phases.find((phase) => dayNumber <= phase.endDay!) ?? phases[phases.length - 1];
 }

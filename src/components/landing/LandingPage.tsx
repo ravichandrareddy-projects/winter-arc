@@ -135,8 +135,8 @@ function InteractiveLiveGraph() {
       fill: "rgba(46, 155, 255, 0.15)",
     },
     sleep: {
-      label: "Deep Sleep & Wake Latency",
-      sub: "Reduced sleep latency & stabilized wake consistency",
+      label: "Sleep & Wake Patterns",
+      sub: "Bedtime patterns & wake-up schedule consistency",
       current: "8.2 hrs",
       delta: "+1.4 hrs",
       trend: "up",
@@ -667,7 +667,7 @@ export default function LandingPage() {
                 <h3 className="text-xl font-black">SLEEP</h3>
               </div>
               <p className="mt-2 text-sm text-muted">
-                Track your bedtime and see your sleep patterns. Measure sleep latency, quality scores, and maintain circadian rhythm consistency.
+                Track your bedtime and see your sleep patterns. Review average times, sleep duration trends, and schedule consistency.
               </p>
             </div>
           </div>

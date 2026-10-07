@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CalendarDays, Target } from "lucide-react";
 import { SettingsCard, field } from "./SettingsCard";
-import { addDaysKey } from "@/lib/dates";
+import { addDaysKey, arcDayNumber } from "@/lib/dates";
 import { requireAuth } from "@/lib/auth-guard";
 import { useWinterArc } from "@/lib/store";
 
@@ -20,11 +20,7 @@ export function GoalsCard() {
 
   if (!arc) return null;
 
-  const currentTotal =
-    Math.round(
-      (new Date(end || arc.endDate).getTime() - new Date(start || arc.startDate).getTime()) /
-        86400000
-    ) + 1;
+  const currentTotal = arcDayNumber(start || arc.startDate, end || arc.endDate);
 
   const pickDuration = (n: number) => {
     setTotal(String(n));
@@ -43,11 +39,12 @@ export function GoalsCard() {
       setError("End date must be on or after start date.");
       return;
     }
-    const days = Math.round((new Date(e).getTime() - new Date(s).getTime()) / 86400000) + 1;
+    const days = arcDayNumber(s, e);
     if (days > 365) {
       setError("Arcs are capped at 365 days.");
       return;
     }
+    setError("");
     requireAuth({
       route: "/settings",
       label: "Save Arc dates",
@@ -66,7 +63,7 @@ export function GoalsCard() {
       sub="Set your Winter Arc goals."
     >
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
           <label htmlFor="arc-start" className="w-24 shrink-0 text-sm">Start Date</label>
           <input
             id="arc-start"
@@ -75,11 +72,13 @@ export function GoalsCard() {
             onChange={(e) => {
               setStart(e.target.value);
               setTotal("custom");
+              setError("");
+              setSaved(false);
             }}
             className={field}
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
           <label htmlFor="arc-end" className="w-24 shrink-0 text-sm">End Date</label>
           <input
             id="arc-end"
@@ -88,11 +87,13 @@ export function GoalsCard() {
             onChange={(e) => {
               setEnd(e.target.value);
               setTotal("custom");
+              setError("");
+              setSaved(false);
             }}
             className={field}
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
           <label htmlFor="arc-total" className="flex w-24 shrink-0 items-center gap-1.5 text-sm">
             <CalendarDays className="h-4 w-4 text-muted" /> Total Days
           </label>
@@ -113,7 +114,7 @@ export function GoalsCard() {
                 {n} Days
               </option>
             ))}
-            <option value="custom">Custom ({currentTotal} Days)</option>
+            <option value="custom">Custom ({Math.max(0, currentTotal)} Days)</option>
           </select>
         </div>
         {error && (

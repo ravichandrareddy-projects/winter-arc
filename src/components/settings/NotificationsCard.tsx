@@ -85,9 +85,8 @@ export function NotificationsCard() {
           const Icon = ROW_ICON[key];
           const r = reminders[key];
           return (
-            <div key={key} className="flex items-center gap-3 py-1.5">
-              <Icon className="h-5 w-5 shrink-0 text-muted" />
-              <span className="flex-1 text-sm">{label}</span>
+            <div key={key} className="grid grid-cols-[minmax(0,1fr)_6.5rem_3rem] items-center gap-2 py-1.5">
+              <span className="flex min-w-0 items-center gap-2 text-sm"><Icon className="h-5 w-5 shrink-0 text-muted" />{label}</span>
               <input
                 type="time"
                 value={r.time}
@@ -97,7 +96,7 @@ export function NotificationsCard() {
                   requireAuth({ route: "/settings", label: "Change reminder", replay: () => setReminder(key, { time: v }) });
                 }}
                 aria-label={`${label} time (currently ${formatTime12(r.time)})`}
-                className="h-10 rounded-xl border border-border bg-background px-3 text-sm"
+                className="h-10 min-w-0 w-full rounded-xl border border-border bg-background px-2 text-sm"
               />
               <Toggle on={r.enabled} onFlip={() => enable(key, !r.enabled)} label={label} />
             </div>

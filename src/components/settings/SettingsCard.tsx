@@ -18,7 +18,7 @@ export function SettingsCard({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <section className="rounded-2xl border border-border bg-card p-5">
+    <section className="min-w-0 rounded-2xl border border-border bg-card p-5">
       <button
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
@@ -67,4 +67,4 @@ export function Toggle({
 }
 
 export const field =
-  "h-12 w-full rounded-xl border border-border bg-background px-4 text-base";
+  "h-12 min-w-0 w-full rounded-xl border border-border bg-background px-4 text-base";

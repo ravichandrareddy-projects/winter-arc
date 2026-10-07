@@ -473,7 +473,7 @@ export default function WinterArcGuidePage() {
               <TrendingUp className="h-5 w-5 text-emerald-400" />
               <h3 className="mt-2 text-sm font-bold text-foreground">90-Day Trend Heatmaps</h3>
               <p className="mt-1 text-xs text-muted">
-                See completion rings and phase progression through Foundation, Momentum, and Mastery.
+                See completion rings and phase progression through Foundation, Hardening, and Transcendence.
               </p>
             </div>
             <div className="rounded-2xl border border-border bg-card/60 p-4">

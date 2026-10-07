@@ -8,6 +8,7 @@ import type {
   PhotoMeta,
 } from "./store";
 import type { TrackerDef } from "./core-trackers";
+import { isSafePhotoId } from "./photos";
 
 /**
  * Supabase IO. Pure functions over explicit args — never imports the store,
@@ -191,6 +192,7 @@ export function pushPhotoMeta(
   uid: string,
   p: { id: string; dateKey: string; angle: string }
 ): Promise<void> {
+  if (!isSafePhotoId(p.id)) return Promise.resolve();
   return upsert("photo_meta", { id: p.id, user_id: uid, date_key: p.dateKey, angle: p.angle });
 }
 
@@ -274,6 +276,7 @@ export async function pushAll(
 // ---- photos (private bucket, path <uid>/<id>) ----
 
 export async function uploadPhoto(uid: string, id: string, blob: Blob): Promise<void> {
+  if (!isSafePhotoId(id)) return;
   const { error } = await createClient()
     .storage.from("body-photos")
     .upload(`${uid}/${id}`, blob, { upsert: true, contentType: blob.type || "image/jpeg" });
@@ -281,6 +284,7 @@ export async function uploadPhoto(uid: string, id: string, blob: Blob): Promise<
 }
 
 export async function downloadPhoto(uid: string, id: string): Promise<Blob | null> {
+  if (!isSafePhotoId(id)) return null;
   const { data, error } = await createClient()
     .storage.from("body-photos")
     .download(`${uid}/${id}`);
@@ -289,6 +293,7 @@ export async function downloadPhoto(uid: string, id: string): Promise<Blob | nul
 }
 
 export async function removePhoto(uid: string, id: string): Promise<void> {
+  if (!isSafePhotoId(id)) return;
   const { error } = await createClient().storage.from("body-photos").remove([`${uid}/${id}`]);
   if (error) console.warn("[sync] photo remove failed:", error.message);
 }

@@ -13,9 +13,8 @@ function useMounted() {
 }
 
 export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const mounted = useMounted();
-  const current = theme === "system" ? resolvedTheme : theme;
   const modes = ["light", "dark", "system"] as const;
   if (!mounted) {
     return <div className="h-11 w-full rounded-xl border border-border" />;
@@ -26,7 +25,7 @@ export function ThemeToggle() {
         <button
           key={m}
           onClick={() => setTheme(m)}
-          aria-pressed={current === m || (m === "system" && theme === "system")}
+          aria-pressed={theme === m}
           className={`flex h-10 items-center justify-center gap-1.5 rounded-lg text-sm font-semibold capitalize ${
             (theme === m || (m === "system" && theme === "system"))
               ? "bg-foreground text-background"

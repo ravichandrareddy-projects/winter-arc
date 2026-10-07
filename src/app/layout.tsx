@@ -3,7 +3,6 @@ import { Outfit, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/lib/auth";
-import { ClientOnly } from "@/components/ClientOnly";
 
 const outfit = Outfit({
   variable: "--font-geist-sans",
@@ -198,10 +197,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="describedby" href={`${CANONICAL_SITE_URL}/llms.txt`} />
         <script
-          id="winterarc-extension-shield"
+          id="winterarc-theme-init"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
-            __html: `(function(){if(typeof window==='undefined')return;try{if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(regs){for(var i=0;i<regs.length;i++){regs[i].unregister();}});if('caches' in window){caches.keys().then(function(names){for(var k=0;k<names.length;k++){caches.delete(names[k]);}});}}var cleanAttr=function(){var els=document.querySelectorAll('[bis_skin_checked],[bis_use]');for(var i=0;i<els.length;i++){els[i].removeAttribute('bis_skin_checked');els[i].removeAttribute('bis_use');}};cleanAttr();if(window.MutationObserver){var observer=new MutationObserver(function(mutations){for(var i=0;i<mutations.length;i++){var t=mutations[i].target;if(t&&t.removeAttribute){if(t.hasAttribute&&t.hasAttribute('bis_skin_checked'))t.removeAttribute('bis_skin_checked');if(t.hasAttribute&&t.hasAttribute('bis_use'))t.removeAttribute('bis_use');}}});observer.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['bis_skin_checked','bis_use']});}var isExt=function(s){return s&&(s.indexOf('chrome-extension://')!==-1||s.indexOf('eppiocemhmnlbhjplcgkofciiegomcon')!==-1||s.indexOf('M_ID')!==-1||s.indexOf('bis_skin_checked')!==-1||s.indexOf('bis_use')!==-1||s.indexOf('executors/200.js')!==-1);};var origError=console.error;console.error=function(){var msg='';for(var i=0;i<arguments.length;i++){var a=arguments[i];msg+=' '+(a&&a.message?a.message:String(a));}if(isExt(msg)){return;}origError.apply(console,arguments);};window.addEventListener('error',function(e){var src=(e&&e.filename)||'';var msg=(e&&e.message)||'';if(isExt(src)||isExt(msg)){if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(e.preventDefault)e.preventDefault();}},true);window.addEventListener('unhandledrejection',function(e){var r=e&&e.reason;var msg=r&&(r.message||r.stack||String(r))||'';if(isExt(msg)){if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(e.preventDefault)e.preventDefault();}},true);}catch(err){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('winterarc-theme')||'dark';var d=t==='system'?matchMedia('(prefers-color-scheme: dark)').matches:t!=='light';document.documentElement.classList.toggle('dark',d);document.documentElement.classList.toggle('light',!d);document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();`,
           }}
         />
         <script
@@ -218,7 +217,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div aria-hidden="true" className="app-bg" suppressHydrationWarning />
         <ThemeProvider>
           <AuthProvider>
-            <ClientOnly>{children}</ClientOnly>
+            {children}
           </AuthProvider>
         </ThemeProvider>
       </body>

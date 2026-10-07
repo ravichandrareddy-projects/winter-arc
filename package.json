@@ -7,6 +7,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
+    "test:browser": "node scripts/test-browser-regressions.mjs",
+    "test:security": "node scripts/test-security.mjs",
     "video:audio": "python3 scripts/generate-video-audio.py",
     "video:render": "npm run video:audio && python3 scripts/render-video.py",
     "video:remotion": "npm run video:audio && remotion render video/index.ts WinterArcAdLandscape public/winter-arc-ad-remotion.mp4 --codec=h264 --crf=18",
@@ -25,7 +27,7 @@
   "devDependencies": {
     "@remotion/cli": "^4.0.532",
     "@remotion/renderer": "^4.0.532",
-    "@serwist/next": "^9.5.12",
+    "@serwist/next": "^9.5.13",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

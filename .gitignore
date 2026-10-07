@@ -45,3 +45,7 @@ next-env.d.ts
 .claude/
 *.bak
 test.mp4
+
+# Serwist's generated navigation worker
+/public/swe-worker-*.js
+/public/sw.js.map

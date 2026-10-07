@@ -137,10 +137,10 @@ export function AppFooter() {
                 <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
               </li>
               <li>
-                <Link href="/llms.txt" className="hover:text-foreground transition-colors">llms.txt (AI Spec)</Link>
+                <a href="/llms.txt" className="hover:text-foreground transition-colors">llms.txt (AI Spec)</a>
               </li>
               <li>
-                <Link href="/sitemap.xml" className="hover:text-foreground transition-colors">Sitemap</Link>
+                <a href="/sitemap.xml" className="hover:text-foreground transition-colors">Sitemap</a>
               </li>
             </ul>
           </div>

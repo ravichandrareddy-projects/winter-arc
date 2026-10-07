@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Check, X } from "lucide-react";
 import { WinterArcLogo } from "./brand";
+import { useWinterArc } from "@/lib/store";
+import { Modal } from "./Modal";
 import { useAuth } from "@/lib/auth";
 import {
   subscribeAuthModal,
@@ -106,9 +108,8 @@ export function AuthModal() {
     "h-12 w-full rounded-xl border border-border bg-background/80 px-4 text-base placeholder:text-muted";
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Sign in">
-      <button aria-label="Close" onClick={close} className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      <div className="auth-pop relative w-full max-w-sm overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-2xl">
+    <Modal open={!!action} onClose={close} label="Sign in" className="items-center justify-center !p-4" backdropClassName="bg-black/70 backdrop-blur-sm">
+      <div className="auth-pop nice-scroll relative max-h-[90dvh] w-full max-w-sm overflow-y-auto rounded-3xl border border-border bg-card p-6 shadow-2xl">
         <div aria-hidden="true" className="app-bg opacity-40" />
         <div className="relative">
           <button
@@ -251,6 +252,7 @@ export function AuthModal() {
                       try {
                         window.localStorage.setItem("wa-guest", "1");
                       } catch {}
+                      useWinterArc.getState().startLocal();
                       const p = takePending();
                       p?.replay?.();
                       setAction(null);
@@ -291,7 +293,7 @@ export function AuthModal() {
           )}
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
 

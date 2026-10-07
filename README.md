@@ -45,6 +45,35 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
 
+## Browser regression checks
+
+Offline support is enabled in production builds. Build and start a local production server before running the browser checks:
+
+```bash
+npm run build
+npm run start -- --port 3100
+```
+
+In another terminal, point the test runner at an installed Chrome/Chromium executable:
+
+```bash
+CHROME_PATH=/usr/bin/google-chrome npm run test:browser
+```
+
+Set `WINTERARC_TEST_URL` for a different local server and `WINTERARC_TEST_ARTIFACTS` to choose an artifact directory. Tests use isolated guest browser storage and cover progress totals, meal synchronization, themes, validation, custom arc phases, keyboard dialogs, narrow screens, photo-inclusive backup/restore, data clearing, hydration, and offline reopening.
+
+JSON backups now include photo files. Older metadata-only backups still restore, with a message identifying missing images.
+
+Run the local security regression checks after starting the production server:
+
+```bash
+CHROME_PATH=/usr/bin/google-chrome npm run test:security
+```
+
+These checks cover response security headers, malicious backup photo paths, persisted router destinations, and auth callback redirect handling.
+
+Apply `supabase/migrations/0002_security_hardening.sql` to the Supabase project before deploying the storage changes. The policy permits owners to access direct `<user-id>/<photo-id>` paths and rejects other users, nested paths, and invalid filenames.
+
 ## Video Rendering
 
 To render promotional videos via Remotion:

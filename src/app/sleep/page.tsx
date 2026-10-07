@@ -40,7 +40,7 @@ export default function SleepPage() {
   );
   const [windowError, setWindowError] = useState("");
 
-  // Start from arc start date and show forward — never show pre-arc days / yesterday
+  // Show recorded history through the selected day, bounded by the arc and today.
   const days = useMemo(
     () => getArcWindowDays(arcStart, selectedDate, range, totalDays),
     [arcStart, selectedDate, range, totalDays]

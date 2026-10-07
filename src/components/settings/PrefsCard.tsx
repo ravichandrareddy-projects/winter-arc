@@ -37,7 +37,7 @@ export function PrefsCard() {
           <p className="mb-1 flex items-center gap-1.5 text-sm">
             <Link2 className="h-4 w-4 text-muted" /> Accent Color
           </p>
-          <div className="flex gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {(Object.keys(ACCENTS) as Accent[]).map((a) => (
               <button
                 key={a}
@@ -54,7 +54,7 @@ export function PrefsCard() {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <label htmlFor="pf-units" className="flex flex-1 items-center gap-1.5 text-sm">
             <Scale className="h-4 w-4 text-muted" /> Units
           </label>
@@ -65,13 +65,13 @@ export function PrefsCard() {
               const v = e.target.value as Units;
               requireAuth({ route: "/settings", label: "Change units", replay: () => setPreferences({ units: v }) });
             }}
-            className={`${field} max-w-[220px]`}
+            className={`${field} sm:max-w-[220px]`}
           >
             <option value="metric">Metric (kg, km)</option>
             <option value="imperial">Imperial (lb, mi)</option>
           </select>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <label htmlFor="pf-tab" className="flex flex-1 items-center gap-1.5 text-sm">
             <LayoutGrid className="h-4 w-4 text-muted" /> Default Start Tab
           </label>
@@ -82,7 +82,7 @@ export function PrefsCard() {
               const v = e.target.value as StartTab;
               requireAuth({ route: "/settings", label: "Change start tab", replay: () => setPreferences({ startTab: v }) });
             }}
-            className={`${field} max-w-[220px]`}
+            className={`${field} sm:max-w-[220px]`}
           >
             {TABS.map((t) => (
               <option key={t.v} value={t.v}>{t.label}</option>

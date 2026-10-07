@@ -73,16 +73,16 @@ export function HomeHeader({ selectedDate }: { selectedDate: string }) {
 
   return (
     <header className="flex flex-wrap items-start justify-between gap-3">
-      <div className="flex items-start gap-3">
+      <div className="flex min-w-0 items-start gap-3">
         <GreetingIcon hour={hour} />
-        <div>
+        <div className="min-w-0">
           <p className="text-sm text-muted">{greeting},</p>
           <button
             onClick={() => {
               setDraft(profile.name);
               setNameOpen(true);
             }}
-            className="text-3xl font-extrabold tracking-tight"
+            className="max-w-full truncate text-3xl font-extrabold tracking-tight"
             aria-label="Edit your name"
           >
             {profile.name}
@@ -93,8 +93,8 @@ export function HomeHeader({ selectedDate }: { selectedDate: string }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        {dataMode === "demo" && (
+      <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto">
+        {dataMode !== "user" && (
           <Link
             href="/settings"
             title="Local device mode — 100% on-device private storage"
@@ -105,9 +105,9 @@ export function HomeHeader({ selectedDate }: { selectedDate: string }) {
           </Link>
         )}
         {arc && (
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs">
-            <CalendarDays className="h-4 w-4 text-muted" />
-            <span className="font-medium">
+          <div className="order-last flex w-full min-w-0 flex-wrap items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs sm:order-none sm:w-auto">
+            <CalendarDays className="h-4 w-4 shrink-0 text-muted" />
+            <span className="min-w-0 flex-1 font-medium">
               {monthDayYear(arc.startDate)} - {monthDayYear(arc.endDate)}
             </span>
             <span className="rounded-full bg-card-2 px-2 py-0.5 font-semibold">
@@ -122,7 +122,7 @@ export function HomeHeader({ selectedDate }: { selectedDate: string }) {
             setDueOpen(true);
           }}
           aria-label="Remaining today"
-          className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card"
+          className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-card"
         >
           <Bell className="h-5 w-5" />
           {remaining.length > 0 && !fire && (

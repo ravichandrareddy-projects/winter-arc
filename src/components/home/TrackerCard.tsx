@@ -14,10 +14,12 @@ import {
   selectEntriesFor,
   selectIsCompleted,
   selectProgressPct,
+  MEAL_TOTAL_NOTE,
   useWinterArc,
 } from "@/lib/store";
 import type { Tracker } from "@/lib/types";
 import { dispatchToast } from "@/lib/notify";
+import Link from "next/link";
 
 function Bar({ pct, color }: { pct: number; color: string }) {
   return (
@@ -114,6 +116,7 @@ export function TrackerCard({
   });
 
   const dayEntries = selectEntriesFor(entries, tracker.id, date);
+  const mealManaged = dayEntries.some((entry) => entry.note === MEAL_TOTAL_NOTE);
   const total = selectDailyTotal(tracker, dayEntries);
   const done = selectIsCompleted(tracker, dayEntries);
   const pct = selectProgressPct(tracker, dayEntries);
@@ -255,7 +258,9 @@ export function TrackerCard({
         <p className="-mt-1 text-right text-xs font-bold text-muted">
           {target > 0 ? Math.round((Math.min(total, target) / target) * 100) : 0}%
         </p>
-        <Stepper
+        {mealManaged ? (
+          <Link href="/food" className="flex h-10 items-center justify-center rounded-xl border border-border text-xs font-semibold">Edit meal log</Link>
+        ) : <Stepper
           display={`${formatNumber(total)} / ${target}`}
           onMinus={() =>
             guard(`Log ${tracker.name}`, { op: "nudge", dir: -1 }, () =>
@@ -268,7 +273,7 @@ export function TrackerCard({
             )
           }
           label={tracker.name}
-        />
+        />}
       </div>
     );
   }
@@ -292,7 +297,9 @@ export function TrackerCard({
       {head}
       {big}
       <Bar pct={pct} color={tracker.color} />
-      <Stepper
+      {mealManaged ? (
+        <Link href="/food" className="flex h-10 items-center justify-center rounded-xl border border-border text-xs font-semibold">Edit meal log</Link>
+      ) : <Stepper
         display={`${formatNumber(+shown.toFixed(2))}${unit}`}
         onMinus={() =>
           guard(`Log ${tracker.name}`, { op: "nudge", dir: -1 }, () =>
@@ -310,7 +317,7 @@ export function TrackerCard({
           })
         }
         label={tracker.name}
-      />
+      />}
       <div className="flex h-4 items-center">
         {done ? (
           <p className="flex items-center gap-1 text-xs font-bold" style={{ color: tracker.color }}>

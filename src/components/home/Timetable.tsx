@@ -11,6 +11,7 @@ import {
   selectDailyTotal,
   selectEntriesFor,
   selectProgressPct,
+  MEAL_TOTAL_NOTE,
   useWinterArc,
 } from "@/lib/store";
 import { TIME_SLOTS } from "@/lib/types";
@@ -22,6 +23,7 @@ function CellValue({ tracker, date, slot }: { tracker: Tracker; date: string; sl
   const toggleSlot = useWinterArc((s) => s.toggleSlot);
   const units = useWinterArc((s) => s.preferences.units);
   const has = list.length > 0;
+  const mealManaged = selectEntriesFor(entries, tracker.id, date).some((entry) => entry.note === MEAL_TOTAL_NOTE);
   const open = has || isSlotReached(date, slot);
   const isLive = !has && open && currentSlot(date, TIME_SLOTS.map((s) => s.slot)) === slot;
   const pathname = usePathname();
@@ -60,7 +62,7 @@ function CellValue({ tracker, date, slot }: { tracker: Tracker; date: string; sl
           replay: () => toggleSlot(tracker.id, date, slot),
         })
       }
-      disabled={!open}
+      disabled={!open || mealManaged}
       aria-label={`${tracker.name} at ${slot}${has ? " (remove)" : ""}`}
       className={`flex h-9 min-w-9 flex-1 items-center justify-center rounded-lg border backdrop-blur-sm transition-colors ${
         has

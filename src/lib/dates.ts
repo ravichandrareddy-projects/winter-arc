@@ -26,14 +26,7 @@ export function arcDayNumber(arcStartKey: string, dateKey: string): number {
   return differenceInCalendarDays(parseKey(dateKey), parseKey(arcStartKey)) + 1;
 }
 
-/**
- * Calculate the exact arc days window for sleep/wake/habit views:
- * - Starts at arcStart (when the user started their arc).
- * - Never includes dates before arcStart (no yesterday or pre-arc ghost days).
- * - If today is Day 1, shows from Day 1 onwards.
- * - If today is Day 2 (even if Day 1 was not attended/missed), shows from Day 1 (when they started) up to current day and ahead.
- * - Bound within the real arc duration (e.g. 90 days).
- */
+/** Retrospective window, bounded by the arc and today. Never pads with future days. */
 export function getArcWindowDays(
   arcStart: string,
   selectedDate: string,
@@ -41,19 +34,10 @@ export function getArcWindowDays(
   totalDays = 90
 ): string[] {
   const start = arcStart || todayKey();
-  const sel = selectedDate || start;
-  const diffFromStart = Math.max(0, differenceInCalendarDays(parseKey(sel), parseKey(start)));
-  
-  let startOffset = 0;
-  if (diffFromStart >= range) {
-    startOffset = diffFromStart - (range - 1);
-  }
-  
-  const windowStart = addDaysKey(start, startOffset);
-  const remainingArcDays = Math.max(1, totalDays - startOffset);
-  const count = Math.min(range, remainingArcDays);
-  
-  return Array.from({ length: Math.max(1, count) }, (_, i) => addDaysKey(windowStart, i));
+  const end = [selectedDate || todayKey(), todayKey(), addDaysKey(start, totalDays - 1)].sort()[0];
+  if (end < start || range < 1 || totalDays < 1) return [];
+  const count = Math.min(range, arcDayNumber(start, end));
+  return Array.from({ length: count }, (_, i) => addDaysKey(end, i - count + 1));
 }
 
 export function dayOfWeek(key: string): number {

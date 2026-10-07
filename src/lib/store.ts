@@ -9,6 +9,7 @@ import type {
   Tracker,
   TrackerEntry,
   TrackerStatus,
+  StartTab,
 } from "./types";
 import {
   addDaysKey,
@@ -34,6 +35,8 @@ import {
   pushTargets,
   pushTracker,
 } from "./sync";
+
+export type { StartTab } from "./types";
 
 export interface NewTrackerInput {
   name: string;
@@ -112,8 +115,6 @@ export interface NewMealInput {
 
 export type Accent = "blue" | "green" | "purple" | "orange";
 export type Units = "metric" | "imperial";
-export type StartTab = "/" | "/sleep" | "/wake-up" | "/fitness" | "/food" | "/progress";
-
 export interface Preferences {
   accent: Accent;
   units: Units;
@@ -176,11 +177,12 @@ interface WinterArcState {
   setProfile: (p: Partial<Profile>) => void;
   /** null = visitor demo; set on login. Persisted to isolate accounts. */
   ownerUid: string | null;
-  dataMode: "demo" | "user";
+  dataMode: "demo" | "local" | "user";
   /** session-only flag (never persisted) */
   demoLoaded: boolean;
   setOwnerUid: (uid: string | null) => void;
   loadDemo: () => void;
+  startLocal: () => void;
   loadUserData: (uid: string, email: string, displayName: string) => Promise<void>;
   setArcDates: (startDate: string, endDate: string) => void;
   setPreferences: (p: Partial<Preferences>) => void;
@@ -211,7 +213,7 @@ interface WinterArcState {
   toggleBoolean: (trackerId: string, date: string, slot?: string) => void;
   deleteEntry: (entryId: string) => void;
   clearDayEntry: (trackerId: string, date: string) => void;
-  addPhotoMeta: (dateKey: string, angle: PhotoMeta["angle"]) => PhotoMeta;
+  addPhotoMeta: (dateKey: string, angle: PhotoMeta["angle"], id?: string) => PhotoMeta;
   updatePhotoMeta: (id: string, patch: Partial<PhotoMeta>) => void;
   deletePhotoMeta: (id: string) => void;
   addMeal: (input: NewMealInput) => MealEntry;
@@ -234,6 +236,61 @@ export interface BackupData {
   nutritionTargets: NutritionTargets;
   preferences: Preferences;
   reminders: Reminders;
+}
+
+/** Starter goals without invented entries, meals, or photos. */
+function emptyArcData(): BackupData {
+  const startDate = todayKey();
+  const endDate = addDaysKey(startDate, 89);
+  const createdAt = nowISO();
+  return {
+    arc: { id: uid(), startDate, endDate, createdAt },
+    profile: { name: "Guest", email: "" },
+    trackers: CORE_TRACKER_DEFS.map((definition, sortOrder) => ({
+      ...definition, id: uid(), startDate, endDate, sortOrder, createdAt, updatedAt: createdAt,
+    })),
+    entries: [], photoMeta: [], meals: [],
+    nutritionTargets: { ...DEFAULT_NUTRITION_TARGETS, protein: 120 },
+    preferences: { ...DEFAULT_PREFERENCES },
+    reminders: { ...DEFAULT_REMINDERS },
+  };
+}
+
+export function isMealLinkedTracker(tracker: Tracker): boolean {
+  const name = tracker.name.trim().toLowerCase();
+  return (name === "food" && tracker.type === "meals") ||
+    (name === "protein" && tracker.category === "food" && tracker.type === "quantity");
+}
+
+export const MEAL_TOTAL_NOTE = "From meal log";
+
+/** Materialize meal totals as tracker entries so every chart and completion selector agrees. */
+function mealTrackerEntries(
+  trackers: Tracker[], entries: TrackerEntry[], meals: MealEntry[], dates?: string[]
+): TrackerEntry[] {
+  const days = new Set(dates ?? [
+    ...meals.map((meal) => meal.dateKey),
+    ...entries.filter((entry) => entry.note === MEAL_TOTAL_NOTE).map((entry) => entry.date),
+  ]);
+  const linked = trackers.filter(isMealLinkedTracker);
+  const ids = new Set(linked.map((tracker) => tracker.id));
+  const next = entries.filter((entry) => !ids.has(entry.trackerId) || !days.has(entry.date));
+  for (const date of days) {
+    const nutrition = dayNutrition(meals, date);
+    if (!nutrition.count) continue;
+    for (const tracker of linked) {
+      const old = entries.find((entry) => entry.trackerId === tracker.id && entry.date === date && entry.note === MEAL_TOTAL_NOTE);
+      const value = tracker.type === "meals" ? nutrition.count : nutrition.protein;
+      next.push({
+        id: old?.id ?? uid(), trackerId: tracker.id, date, value,
+        completed: tracker.target != null ? value >= tracker.target : value > 0,
+        targetSnapshot: old?.targetSnapshot ?? tracker.target,
+        unitSnapshot: old?.unitSnapshot ?? tracker.unit,
+        note: MEAL_TOTAL_NOTE, createdAt: old?.createdAt ?? nowISO(), updatedAt: nowISO(),
+      });
+    }
+  }
+  return next;
 }
 
 function nextSortOrder(trackers: Tracker[]): number {
@@ -265,12 +322,32 @@ export function colorForIcon(icon: Tracker["icon"]): string {
 export const useWinterArc = create<WinterArcState>()(
   persist(
     (set, get) => {
-      /** fire-and-forget Supabase sync; no-op for visitors (demo never persists). */
+      /** Fire-and-forget cloud sync; guest data remains on the device. */
       const sync = (run: (uid: string) => Promise<void>): void => {
         const uid = get().ownerUid;
         if (uid) void run(uid);
       };
       const arcId = (): string | null => get().arc?.id ?? null;
+      const reconcileMeals = (dates?: string[]) => {
+        const state = get();
+        const protein = state.trackers.find((tracker) => isMealLinkedTracker(tracker) && tracker.type === "quantity");
+        set({
+          entries: mealTrackerEntries(state.trackers, state.entries, state.meals, dates),
+          nutritionTargets: protein?.target != null
+            ? { ...state.nutritionTargets, protein: protein.target }
+            : state.nutritionTargets,
+        });
+        if (dates) sync(async (owner) => {
+          for (const tracker of get().trackers.filter(isMealLinkedTracker)) {
+            for (const date of new Set(dates)) {
+              await pushClearDay(owner, tracker.id, date);
+              for (const entry of selectEntriesFor(get().entries, tracker.id, date)) await pushEntry(owner, entry);
+            }
+          }
+        });
+      };
+      const mealManaged = (tracker: Tracker, date: string) =>
+        isMealLinkedTracker(tracker) && get().meals.some((meal) => meal.dateKey === date);
       return {
       arc: null,
       profile: { name: "Your Name", email: "" },
@@ -291,14 +368,24 @@ export const useWinterArc = create<WinterArcState>()(
         // Visitors get initial starter trackers if empty.
         // User data stored locally on device is strictly preserved across days.
         const s = get();
-        if (s.trackers.length === 0) {
-          get().loadDemo();
+        if (s.trackers.length === 0 && !s.demoLoaded) {
+          if (s.dataMode === "demo") get().loadDemo();
+          else set({ ...emptyArcData(), demoLoaded: true });
         } else if (!s.demoLoaded) {
           set({ demoLoaded: true });
+          reconcileMeals();
         }
       },
 
       setOwnerUid: (uid) => set({ ownerUid: uid }),
+
+      startLocal: () => {
+        const state = get();
+        set({
+          ...(state.arc ? {} : emptyArcData()),
+          ownerUid: null, dataMode: "local", demoLoaded: true,
+        });
+      },
 
       loadDemo: () => {
         const bundle = buildDemoBundle();
@@ -322,6 +409,7 @@ export const useWinterArc = create<WinterArcState>()(
           dataMode: "demo",
           demoLoaded: true,
         });
+        reconcileMeals();
       },
 
       loadUserData: async (uid, email, displayName) => {
@@ -349,6 +437,7 @@ export const useWinterArc = create<WinterArcState>()(
           dataMode: "user",
           demoLoaded: true,
         });
+        reconcileMeals();
       },
 
       setSelectedDate: (d) => set({ selectedDate: d }),
@@ -400,6 +489,10 @@ export const useWinterArc = create<WinterArcState>()(
           ),
         }));
         const t = get().trackers.find((x) => x.id === id);
+        if (t && isMealLinkedTracker(t) && t.type === "quantity" && patch.target != null) {
+          set((state) => ({ nutritionTargets: { ...state.nutritionTargets, protein: patch.target! } }));
+          sync((owner) => pushTargets(owner, get().nutritionTargets));
+        }
         if (t) sync((uid) => pushTracker(uid, t, arcId()));
       },
 
@@ -436,7 +529,7 @@ export const useWinterArc = create<WinterArcState>()(
 
       logSingle: (trackerId, date, value, completed, slot) => {
         const tracker = get().trackers.find((t) => t.id === trackerId);
-        if (!tracker) return;
+        if (!tracker || mealManaged(tracker, date)) return;
         const isDone =
           completed ??
           (typeof value === "boolean"
@@ -477,7 +570,7 @@ export const useWinterArc = create<WinterArcState>()(
 
       addSubEntry: (trackerId, date, amount, slot) => {
         const tracker = get().trackers.find((t) => t.id === trackerId);
-        if (!tracker || !Number.isFinite(amount) || amount === 0) return;
+        if (!tracker || mealManaged(tracker, date) || !Number.isFinite(amount) || amount === 0) return;
         const entry: TrackerEntry = {
           id: uid(),
           trackerId,
@@ -497,7 +590,7 @@ export const useWinterArc = create<WinterArcState>()(
       nudge: (trackerId, date, dir, slot) => {
         const s = get();
         const tracker = s.trackers.find((t) => t.id === trackerId);
-        if (!tracker || tracker.type === "boolean" || tracker.type === "time") return;
+        if (!tracker || mealManaged(tracker, date) || tracker.type === "boolean" || tracker.type === "time") return;
         const dayEntries = s.entries.filter(
           (e) => e.trackerId === trackerId && e.date === date
         );
@@ -562,11 +655,14 @@ export const useWinterArc = create<WinterArcState>()(
       },
 
       deleteEntry: (entryId) => {
+        if (get().entries.find((entry) => entry.id === entryId)?.note === MEAL_TOTAL_NOTE) return;
         set((s) => ({ entries: s.entries.filter((e) => e.id !== entryId) }));
         sync((uid) => pushDelete("tracker_entries", uid, entryId));
       },
 
       clearDayEntry: (trackerId, date) => {
+        const tracker = get().trackers.find((item) => item.id === trackerId);
+        if (tracker && mealManaged(tracker, date)) return;
         set((s) => ({
           entries: s.entries.filter(
             (e) => !(e.trackerId === trackerId && e.date === date)
@@ -575,8 +671,8 @@ export const useWinterArc = create<WinterArcState>()(
         sync((uid) => pushClearDay(uid, trackerId, date));
       },
 
-      addPhotoMeta: (dateKey, angle) => {
-        const meta: PhotoMeta = { id: uid(), dateKey, angle, createdAt: nowISO() };
+      addPhotoMeta: (dateKey, angle, id) => {
+        const meta: PhotoMeta = { id: id ?? uid(), dateKey, angle, createdAt: nowISO() };
         set((s) => ({ photoMeta: [...s.photoMeta, meta] }));
         sync((uid) => pushPhotoMeta(uid, meta));
         return meta;
@@ -605,31 +701,40 @@ export const useWinterArc = create<WinterArcState>()(
           updatedAt: nowISO(),
         };
         set((s) => ({ meals: [...s.meals, meal] }));
+        reconcileMeals([meal.dateKey]);
         sync((uid) => pushMeal(uid, meal));
         return meal;
       },
 
       updateMeal: (id, patch) => {
+        const previousDate = get().meals.find((meal) => meal.id === id)?.dateKey;
         set((s) => ({
           meals: s.meals.map((m) =>
             m.id === id ? { ...m, ...patch, updatedAt: nowISO() } : m
           ),
         }));
         const m = get().meals.find((x) => x.id === id);
+        if (m) reconcileMeals([previousDate ?? m.dateKey, m.dateKey]);
         if (m) sync((uid) => pushMeal(uid, m));
       },
 
       deleteMeal: (id) => {
+        const date = get().meals.find((meal) => meal.id === id)?.dateKey;
         set((s) => ({ meals: s.meals.filter((m) => m.id !== id) }));
+        if (date) reconcileMeals([date]);
         sync((uid) => pushDelete("meals", uid, id));
       },
 
       setNutritionTargets: (t) => {
         set((s) => ({ nutritionTargets: { ...s.nutritionTargets, ...t } }));
+        if (t.protein != null) {
+          const protein = get().trackers.find((tracker) => isMealLinkedTracker(tracker) && tracker.type === "quantity");
+          if (protein) get().updateTracker(protein.id, { target: t.protein });
+        }
         sync((uid) => pushTargets(uid, get().nutritionTargets));
       },
 
-      restoreAll: (data) =>
+      restoreAll: (data) => {
         set({
           arc: data.arc,
           profile: data.profile,
@@ -641,32 +746,37 @@ export const useWinterArc = create<WinterArcState>()(
           preferences: data.preferences ?? { ...DEFAULT_PREFERENCES },
           reminders: data.reminders ?? { ...DEFAULT_REMINDERS },
           selectedDate: todayKey(),
-        }),
+          dataMode: get().ownerUid ? "user" : "local",
+          demoLoaded: true,
+        });
+        reconcileMeals();
+      },
 
       wipeAll: () =>
         set({
-          arc: null,
-          profile: { name: "", email: "" },
-          trackers: [],
-          entries: [],
-          photoMeta: [],
-          meals: [],
-          nutritionTargets: { ...DEFAULT_NUTRITION_TARGETS },
-          preferences: { ...DEFAULT_PREFERENCES },
-          reminders: { ...DEFAULT_REMINDERS },
+          ...emptyArcData(),
+          profile: get().ownerUid ? get().profile : { name: "Guest", email: "" },
           selectedDate: todayKey(),
           view: "cards",
-          ownerUid: null,
-          dataMode: "demo",
-          demoLoaded: false,
+          dataMode: get().ownerUid ? "user" : "local",
+          demoLoaded: true,
         }),
 
       setArcDates: (startDate, endDate) => {
+        const previous = get().arc;
         set((s) => ({
           arc: s.arc ? { ...s.arc, startDate, endDate } : s.arc,
+          trackers: s.trackers.map((tracker) => ({
+            ...tracker,
+            startDate: tracker.startDate === previous?.startDate ? startDate : tracker.startDate,
+            endDate: tracker.endDate === previous?.endDate ? endDate : tracker.endDate,
+          })),
         }));
         const a = get().arc;
-        if (a) sync((uid) => pushArc(uid, a));
+        if (a) sync(async (owner) => {
+          await pushArc(owner, a);
+          for (const tracker of get().trackers) await pushTracker(owner, tracker, a.id);
+        });
       },
 
       setPreferences: (p) => {

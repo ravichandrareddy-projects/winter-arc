@@ -458,7 +458,7 @@ export default function WinterArcRulesPage() {
               <span className="text-accent">IMPROVE</span>
             </div>
             <p className="mt-2 text-xs text-muted">
-              Use a focused period to build better habits, eliminate distractions, understand personal patterns, and enter the new year with unstobbale momentum.
+              Use a focused period to build better habits, eliminate distractions, understand personal patterns, and enter the new year with unstoppable momentum.
             </p>
           </div>
         </div>

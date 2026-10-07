@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import { WinterArcWordmark } from "./brand";
 
-/**
- * Renders children only after mount. Server and first client render output
- * the identical skeleton, so hydration always matches — browser extensions
- * mutating the live DOM can't break it afterwards (no comparison happens).
- * Right call for a local-first PWA: no SEO content is lost.
- */
+const subscribe = () => () => {};
+
+/** Keep browser-local tracking state out of the server hydration snapshot. */
 export function ClientOnly({ children }: { children: ReactNode }) {
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
+  if (!mounted) {
+    return (
+      <div role="status" className="flex min-h-dvh flex-col items-center justify-center gap-4 px-4">
+        <WinterArcWordmark />
+        <p className="text-sm text-muted">Loading your Winter Arc…</p>
+      </div>
+    );
+  }
   return <>{children}</>;
 }

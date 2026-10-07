@@ -62,7 +62,7 @@ const ONBOARDING_STEPS = [
     badge: "Step 3: Review & Lock In",
     title: "Phase Roadmaps & Streaks",
     action: "Watch your 90-day progress arc light up",
-    desc: "Review your consistency at night. Progress through Phase 1: Foundation (Days 1–30), Phase 2: Momentum (Days 31–60), and Phase 3: Mastery (Days 61–90). Protect your streak every single day.",
+    desc: "Review your consistency at night. A 90-day arc progresses through Foundation (Days 1–30), Hardening (Days 31–60), and Transcendence (Days 61–90). Phase lengths adapt to your chosen duration.",
     tip: "Rule of the Arc: Never allow two missed days in a row.",
     icon: Flame,
     color: "#f59e0b",
@@ -79,7 +79,7 @@ const MODULE_GUIDES = [
     img: "/video-assets/real/04_sleep.png",
     stat: "8.2 hrs",
     statDesc: "Average deep sleep target window",
-    how: "Log your bedtime and morning wake time. The system calculates your sleep latency, quality scores, and displays your circadian consistency.",
+    how: "Log your bedtime and morning wake time. Review average bedtime, earliest and latest times, schedule consistency, and sleep duration trends.",
   },
   {
     id: "wake",
@@ -123,7 +123,7 @@ const MODULE_GUIDES = [
     img: "/video-assets/real/08_progress.png",
     stat: "+34%",
     statDesc: "Weekly consistency trajectory",
-    how: "Visit the Progress tab to inspect radar charts, weekly consistency deltas, and streak achievements over your 90-day arc.",
+    how: "Visit the Progress tab to inspect habit completion heatmaps, weekly consistency, and sleep, wake-up, steps, and weight trends across your arc.",
   },
 ];
 
@@ -259,12 +259,12 @@ export default function IntroOnboardingPage() {
       {/* Top Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="group flex min-w-0 items-center gap-1.5 sm:gap-3">
             <WinterArcLogo className="h-8 w-8 text-accent transition-transform group-hover:scale-105" />
-            <span className="text-lg font-black tracking-tight">
+            <span className="text-sm font-black tracking-tight sm:text-lg">
               WINTER<span className="text-accent ml-1">ARC</span>
             </span>
-            <span className="ml-2 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-0.5 text-[9px] font-mono font-bold tracking-widest text-accent uppercase">
+            <span className="ml-2 hidden rounded-full border border-accent/30 bg-accent-soft px-2.5 py-0.5 text-[9px] font-mono font-bold tracking-widest text-accent uppercase sm:inline">
               Official Portal
             </span>
           </Link>
@@ -274,7 +274,7 @@ export default function IntroOnboardingPage() {
             href="/"
             onClick={markSeenAndEnter}
             id="intro-top-enter-btn"
-            className="flex items-center gap-2 rounded-xl border border-accent/50 bg-gradient-to-r from-accent via-sky-500 to-accent px-5 py-2 text-xs sm:text-sm font-extrabold text-white shadow-[0_0_24px_rgba(46,155,255,0.35)] transition duration-200 hover:scale-104 active:scale-95"
+            className="flex shrink-0 items-center gap-1 rounded-xl border border-accent/50 bg-gradient-to-r from-accent via-sky-500 to-accent px-2 py-2 text-[10px] sm:gap-2 sm:px-5 sm:text-sm font-extrabold text-white shadow-[0_0_24px_rgba(46,155,255,0.35)] transition duration-200 hover:scale-104 active:scale-95"
           >
             <span>ENTER TRACKER</span>
             <ArrowRight className="h-4 w-4" />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   CheckCircle2,
   Dumbbell,
@@ -22,6 +22,8 @@ import { selectDayCompletion, useWinterArc } from "@/lib/store";
 import { useEffect } from "react";
 import { NotificationToastHub } from "./NotificationToastHub";
 import { AppFooter } from "./AppFooter";
+import { ClientOnly } from "./ClientOnly";
+import { getArcPhase } from "@/lib/motivation";
 
 const NAV = [
   { href: "/", label: "Home", icon: House },
@@ -80,12 +82,14 @@ function NavLink({
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  return <ClientOnly><AppShellContent>{children}</AppShellContent></ClientOnly>;
+}
+
+function AppShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const arc = useWinterArc((s) => s.arc);
   const profile = useWinterArc((s) => s.profile);
   const accent = useWinterArc((s) => s.preferences.accent);
-  const startTab = useWinterArc((s) => s.preferences.startTab);
   const ensureSeed = useWinterArc((s) => s.ensureSeed);
 
   useEffect(() => {
@@ -111,24 +115,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const todayStats = selectDayCompletion(trackers, entries, today);
 
+  const arcPhase = getArcPhase(dayN, totalDays);
   const phase =
-    dayN <= 30
+    arcPhase.phase === 1
       ? {
           num: 1,
           name: "Foundation",
           badge: "text-amber-400 bg-amber-400/10 border-amber-400/25",
           quote: "“Discipline is choosing between what you want now and what you want most.”",
         }
-      : dayN <= 60
+      : arcPhase.phase === 2
       ? {
           num: 2,
-          name: "Momentum",
+          name: "Hardening",
           badge: "text-sky-400 bg-sky-400/10 border-sky-400/25",
           quote: "“The winter arc is won in the silent hours no one sees.”",
         }
       : {
           num: 3,
-          name: "Mastery",
+          name: "Transcendence",
           badge: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25",
           quote: "“Mastery is not an act, but a habit. Finish what you started.”",
         };
@@ -151,7 +156,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-between gap-1">
             <div className="flex items-center gap-1.5">
               <Flame className="h-4 w-4 text-accent" />
-              <span className="text-xs font-bold text-foreground">90-Day Arc</span>
+              <span className="text-xs font-bold text-foreground">{totalDays}-Day Arc</span>
             </div>
             <span className={`rounded-full border px-2 py-0.5 text-[10px] font-extrabold ${phase.badge}`}>
               P{phase.num} · {phase.name}

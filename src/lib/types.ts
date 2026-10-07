@@ -16,6 +16,8 @@ export interface Frequency {
 
 export type TrackerStatus = "active" | "paused" | "archived";
 
+export type StartTab = "/" | "/sleep" | "/wake-up" | "/fitness" | "/food" | "/progress";
+
 export type TrackerCategory =
   | "hydration"
   | "food"

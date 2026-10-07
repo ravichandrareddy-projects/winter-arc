@@ -26,6 +26,7 @@ import {
 } from "./auth-guard";
 import { AuthModal } from "@/components/AuthModal";
 import { setHasSeenIntro } from "./intro-storage";
+import { safeInternalPath } from "./navigation";
 
 export type { AuthStatus };
 
@@ -122,13 +123,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // then the in-memory parked action.
         const stashed = takeStashed();
         if (stashed) {
-          router.push(stashed.route);
+          router.push(safeInternalPath(stashed.route));
           window.setTimeout(() => emitAuthResume(stashed), 600);
           return;
         }
         const p: PendingAction | null = takePending();
         if (p) {
-          router.push(p.route);
+          router.push(safeInternalPath(p.route));
           if (p.replay) window.setTimeout(() => p.replay?.(), 450);
         }
       } else {
@@ -137,9 +138,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Returning session user → wipe to demo (privacy).
         // Fresh visitor with pre-seeded content (E2E/showcase) → leave it.
         // Fresh visitor with nothing → demo bundle.
-        if (st.ownerUid !== null || st.trackers.length === 0) {
+        if (st.ownerUid !== null) {
           st.setOwnerUid(null);
           st.loadDemo();
+        } else {
+          st.ensureSeed();
         }
       }
     });
@@ -220,8 +223,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setHasSeenIntro(false);
       const st = useWinterArc.getState();
+      const wasAuthenticated = st.ownerUid !== null;
       st.setOwnerUid(null);
-      st.loadDemo();
+      if (wasAuthenticated) st.loadDemo();
     } catch {
       /* ignore */
     }

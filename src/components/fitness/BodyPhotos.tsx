@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Camera, Image as ImageIcon, ImagePlus, Plus, Trash2, Upload } from "lucide-react";
 import { Sheet } from "../Sheet";
-import { addDaysKey, arcDayNumber, formatNumber, monthDayShort } from "@/lib/dates";
+import { addDaysKey, arcDayNumber, formatNumber, monthDayShort, uid } from "@/lib/dates";
 import { displayWeight, weightUnit } from "@/lib/units";
 import { smoothPath, toRuns } from "@/lib/chart";
 import { deletePhotoBlob, getPhotoBlob, putPhotoBlob } from "@/lib/photos";
@@ -19,31 +19,34 @@ import {
 type Angle = PhotoMeta["angle"];
 const ANGLES: ("all" | Angle)[] = ["all", "front", "side", "back"];
 
-function usePhotoUrls(ids: string[], uid: string | null): Record<string, string> {
-  const [urls, setUrls] = useState<Record<string, string>>({});
+function usePhotoUrls(ids: string[], owner: string | null) {
+  const idsKey = JSON.stringify(ids);
+  const key = `${owner ?? "local"}:${idsKey}`;
+  const [result, setResult] = useState<{ key: string; urls: Record<string, string> }>({ key: "", urls: {} });
   useEffect(() => {
     let alive = true;
     const made: string[] = [];
     Promise.all(
-      ids.map((id) =>
+      (JSON.parse(idsKey) as string[]).map((id) =>
         getPhotoBlob(id)
-          .then((blob) => blob ?? (uid ? downloadPhoto(uid, id) : null))
+          .then((blob) => blob ?? (owner ? downloadPhoto(owner, id) : null))
           .then((blob) => {
             if (blob && alive) {
               const url = URL.createObjectURL(blob);
               made.push(url);
-              setUrls((u) => ({ ...u, [id]: url }));
+              return [id, url] as const;
             }
+            return [id, ""] as const;
           })
-          .catch(() => undefined)
+          .catch(() => [id, ""] as const)
       )
-    );
+    ).then((pairs) => { if (alive) setResult({ key, urls: Object.fromEntries(pairs) }); });
     return () => {
       alive = false;
       made.forEach((u) => URL.revokeObjectURL(u));
     };
-  }, [ids.join("|")]);
-  return urls;
+  }, [idsKey, owner, key]);
+  return { urls: result.key === key ? result.urls : {}, loaded: result.key === key };
 }
 
 function weightOn(
@@ -62,7 +65,6 @@ export function BodyPhotos() {
   const entries = useWinterArc((s) => s.entries);
   const arc = useWinterArc((s) => s.arc);
   const addPhotoMeta = useWinterArc((s) => s.addPhotoMeta);
-  const updatePhotoMeta = useWinterArc((s) => s.updatePhotoMeta);
   const deletePhotoMeta = useWinterArc((s) => s.deletePhotoMeta);
   const units = useWinterArc((s) => s.preferences.units);
   const ownerUid = useWinterArc((s) => s.ownerUid);
@@ -79,6 +81,8 @@ export function BodyPhotos() {
   const [pending, setPending] = useState<{ blob: Blob; url: string } | null>(null);
   const [pendingAngle, setPendingAngle] = useState<Angle>("front");
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const cameraRef = useRef<HTMLInputElement>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
 
@@ -96,10 +100,11 @@ export function BodyPhotos() {
     );
   }, [photoMeta, tab, latestFirst]);
 
-  const urls = usePhotoUrls(
+  const { urls, loaded } = usePhotoUrls(
     visible.map((p) => p.id),
     ownerUid
   );
+  useEffect(() => () => { if (pending) URL.revokeObjectURL(pending.url); }, [pending]);
 
   const pickFile = (ref: React.RefObject<HTMLInputElement | null>) =>
     requireAuth({
@@ -112,20 +117,27 @@ export function BodyPhotos() {
   const onFile = (f: File | undefined) => {
     if (!f) return;
     const allowed = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
-    if (!allowed.includes(f.type.toLowerCase())) return;
-    if (f.size > 15 * 1024 * 1024) return; // 15MB cap
+    if (!allowed.includes(f.type.toLowerCase())) { setError("Choose a JPG, PNG, WebP, or HEIC image."); return; }
+    if (f.size > 15 * 1024 * 1024) { setError("Photos must be 15MB or smaller."); return; }
+    setError("");
     if (pending) URL.revokeObjectURL(pending.url);
     setPending({ blob: f, url: URL.createObjectURL(f) });
     setPendingAngle("front");
   };
 
   const savePending = async () => {
-    if (!pending) return;
-    const meta = addPhotoMeta(photoDate, pendingAngle);
-    await putPhotoBlob(meta.id, pending.blob);
-    if (ownerUid) await uploadPhoto(ownerUid, meta.id, pending.blob);
-    URL.revokeObjectURL(pending.url);
-    setPending(null);
+    if (!pending || saving) return;
+    setSaving(true);
+    setError("");
+    try {
+      const id = uid();
+      await putPhotoBlob(id, pending.blob);
+      addPhotoMeta(photoDate, pendingAngle, id);
+      if (ownerUid) await uploadPhoto(ownerUid, id, pending.blob);
+      setPending(null);
+    } catch {
+      setError("Couldn't save the photo. Check available device storage and try again.");
+    } finally { setSaving(false); }
   };
 
   const remove = async (id: string) => {
@@ -156,6 +168,7 @@ export function BodyPhotos() {
 
   return (
     <div className="flex flex-col gap-4">
+      {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
       {/* add row */}
       <div className="rounded-2xl border border-border bg-card p-4">
         <p className="mb-3 text-sm font-bold">Add Photo</p>
@@ -259,7 +272,9 @@ export function BodyPhotos() {
                     {urls[p.id] ? (
                       <img src={urls[p.id]} alt={`${p.angle} ${p.dateKey}`} className="aspect-[3/4] w-full object-cover" />
                     ) : (
-                      <div className="aspect-[3/4] w-full bg-card-2" />
+                      <div className="flex aspect-[3/4] w-full items-center justify-center bg-card-2 p-4 text-xs text-muted">
+                        {loaded ? "Photo file unavailable — restore a photo-inclusive backup." : "Loading photo…"}
+                      </div>
                     )}
                   </button>
                   <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-bold capitalize text-white backdrop-blur-sm">
@@ -360,9 +375,10 @@ export function BodyPhotos() {
         />
         <button
           onClick={savePending}
+          disabled={saving}
           className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground text-sm font-semibold text-background"
         >
-          <Upload className="h-4 w-4" /> SAVE PHOTO
+          <Upload className="h-4 w-4" /> {saving ? "SAVING…" : "SAVE PHOTO"}
         </button>
       </Sheet>
 

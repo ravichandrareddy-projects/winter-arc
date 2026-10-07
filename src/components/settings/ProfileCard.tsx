@@ -13,9 +13,18 @@ export function ProfileCard() {
   const [name, setName] = useState(profile.name);
   const [email, setEmail] = useState(profile.email);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
   const save = () => {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      setError("Please enter your name.");
+      return;
+    }
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError("");
     const apply = () => {
       setProfile({ name: name.trim(), email: email.trim() });
       setSaved(true);
@@ -37,7 +46,7 @@ export function ProfileCard() {
           <input
             id="pf-name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { setName(e.target.value); setError(""); setSaved(false); }}
             maxLength={30}
             className={`${field} mt-0.5`}
           />
@@ -46,12 +55,17 @@ export function ProfileCard() {
       <label htmlFor="pf-email" className="mt-3 block text-sm text-muted">Email</label>
       <input
         id="pf-email"
+        type="email"
+        autoComplete="email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => { setEmail(e.target.value); setError(""); setSaved(false); }}
+        aria-invalid={!!error}
+        aria-describedby={error ? "profile-error" : undefined}
         maxLength={60}
         placeholder="you@example.com"
         className={`${field} mt-0.5`}
       />
+      {error && <p id="profile-error" role="alert" className="mt-2 text-sm text-red-500">{error}</p>}
       <button
         onClick={save}
         className="mt-4 flex h-11 w-full items-center justify-center rounded-full bg-foreground text-sm font-semibold text-background"

@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Flame, RefreshCw, ShieldAlert, Sparkles, Trophy, Zap } from "lucide-react";
+import { useState } from "react";
+import { Flame, RefreshCw, ShieldAlert, Trophy, Zap } from "lucide-react";
 import { arcDayNumber, todayKey } from "@/lib/dates";
 import { dispatchToast } from "@/lib/notify";
-import { useWinterArc, selectEntriesFor, selectIsCompleted } from "@/lib/store";
+import { useWinterArc, selectDayCompletion } from "@/lib/store";
 import {
   getArcPhase,
   MOTIVATION_QUOTES,
@@ -19,7 +19,7 @@ export function MotivationHero() {
 
   const totalDays = arc ? arcDayNumber(arc.startDate, arc.endDate) : 90;
   const dayN = arc ? Math.min(totalDays, Math.max(1, arcDayNumber(arc.startDate, today))) : 1;
-  const phase = getArcPhase(dayN);
+  const phase = getArcPhase(dayN, totalDays);
 
   // Daily seed quote + shuffle capability
   const [quoteIndex, setQuoteIndex] = useState(() => (dayN * 3) % MOTIVATION_QUOTES.length);
@@ -29,16 +29,8 @@ export function MotivationHero() {
   const activeQuote: MotivationQuote = MOTIVATION_QUOTES[quoteIndex] ?? MOTIVATION_QUOTES[0];
 
   // Calculate today's completed trackers
-  const todayCompleted = useMemo(() => {
-    return trackers.filter((t) => {
-      if (t.status !== "active") return false;
-      const list = selectEntriesFor(entries, t.id, today);
-      return selectIsCompleted(t, list);
-    }).length;
-  }, [trackers, entries, today]);
-
-  const activeTrackersCount = trackers.filter((t) => t.status === "active").length;
-  const streakPct = activeTrackersCount > 0 ? Math.round((todayCompleted / activeTrackersCount) * 100) : 0;
+  const { done: todayCompleted, total: activeTrackersCount, pct: streakPct } =
+    selectDayCompletion(trackers, entries, today);
 
   const shuffleQuote = () => {
     setIsRotating(true);
