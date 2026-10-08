@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { LiveUserCount } from "@/components/LiveUserCount";
 import {
   ArrowRight,
   Sparkles,
@@ -841,7 +842,10 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border/60 bg-background/90 py-8 text-center text-xs text-muted">
         <div className="mx-auto flex max-w-6xl flex-col sm:flex-row items-center justify-between px-4 sm:px-6 gap-4">
-          <p>© {new Date().getFullYear()} Winter Arc Protocol. Discipline Builds Freedom.</p>
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+            <p>© {new Date().getFullYear()} Winter Arc Protocol. Discipline Builds Freedom.</p>
+            <LiveUserCount />
+          </div>
           <div className="flex items-center gap-6">
             <Link href="/terms" className="hover:text-foreground">Terms</Link>
             <Link href="/privacy" className="hover:text-foreground">Privacy</Link>

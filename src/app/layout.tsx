@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/lib/auth";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { FirebaseAnalytics } from "@/components/FirebaseAnalytics";
 
 const outfit = Outfit({
   variable: "--font-geist-sans",
@@ -222,6 +223,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </AuthProvider>
         </ThemeProvider>
         <GoogleAnalytics />
+        <FirebaseAnalytics />
       </body>
     </html>
   );

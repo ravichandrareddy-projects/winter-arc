@@ -5,11 +5,13 @@ const supabaseOrigin = (() => {
   try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").origin; } catch { return ""; }
 })();
 const supabaseWsOrigin = supabaseOrigin.replace(/^https:/, "wss:").replace(/^http:/, "ws:");
-const analyticsEnabled = /^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "");
+const analyticsEnabled = /^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "") ||
+  /^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID ?? "");
 const analyticsScriptOrigin = analyticsEnabled ? "https://www.googletagmanager.com" : "";
+const firebaseOrigins = "https://firebase.googleapis.com https://firebaseinstallations.googleapis.com https://*.googleapis.com https://*.firebaseio.com";
 const analyticsConnectOrigins = analyticsEnabled
-  ? "https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com"
-  : "";
+  ? `https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com ${firebaseOrigins}`
+  : firebaseOrigins;
 const scriptSource = process.env.NODE_ENV === "development"
   ? `'self' 'unsafe-inline' 'unsafe-eval' ${analyticsScriptOrigin}`
   : `'self' 'unsafe-inline' ${analyticsScriptOrigin}`;

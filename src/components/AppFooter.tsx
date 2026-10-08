@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { WinterArcLogo } from "./brand";
+import { LiveUserCount } from "./LiveUserCount";
 
 export function AppFooter() {
   return (
@@ -150,6 +151,7 @@ export function AppFooter() {
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border/50 pt-6 sm:flex-row text-xs text-muted">
           <div className="flex flex-wrap items-center gap-3">
             <p>© {new Date().getFullYear()} Winter Arc Protocol (winterarc.indevs.in).</p>
+            <LiveUserCount />
             <Link
               href="/intro"
               id="footer-intro-screen-btn"
