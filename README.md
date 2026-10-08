@@ -35,7 +35,23 @@ Create a `.env.local` file with your Supabase credentials:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Optional: add your real Google Analytics 4 web-stream measurement ID
+# NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
+
+### Optional Google Analytics 4
+
+Google Analytics and Firebase are separate from the existing Supabase authentication/sync setup. Firebase is not required for website visitor counts.
+
+1. Create a GA4 web data stream for `https://winterarc.indevs.in` in Google Analytics and copy its `G-...` measurement ID.
+2. In that stream, turn **Enhanced measurement off**. The app sends its own initial and client-navigation page views; automatic history tracking would duplicate those events and may include raw URLs.
+3. Add `NEXT_PUBLIC_GA_MEASUREMENT_ID` to the hosting project's production environment and redeploy. `NEXT_PUBLIC_` values are included at build time.
+4. Verify visits in Google Analytics Realtime after deployment (browser blockers may prevent collection).
+
+Without a valid ID, no Google tag is loaded and the CSP does not allow analytics origins. With an ID, the tag loads during browser idle time. This integration sends route page views, omits URL queries/fragments, and disables Google Signals and advertising personalization. It does not send tracker entries, meals, sleep records, photos, or account details. Google Analytics can still use cookies and browser/device information; these visits are not described as anonymous. No custom Web Vitals collection is installed.
+
+To verify either configuration locally, run `node scripts/test-analytics.mjs` against a production server using `WINTERARC_TEST_URL`. For the enabled test, build and start with `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-TEST12345`, then pass `WINTERARC_EXPECT_GA=G-TEST12345` to the test. The test intercepts the Google tag, so it sends no analytics to Google.
 
 ### 3. Run Development Server
 

@@ -31,8 +31,8 @@ const DOCS: { key: string; title: string; icon: typeof Info; body: string[] }[] 
     title: "Privacy Policy",
     icon: ShieldCheck,
     body: [
-      "Winter Arc stores everything locally on your device (browser storage + on-device photo library).",
-      "No account, no server, no analytics, no tracking. Nothing you log ever leaves this device unless you use Share or Export.",
+      "Guest tracking data is stored locally on your device. Signing in enables Supabase account sync.",
+      "If site analytics is configured, Google Analytics receives page views and may use cookies and browser/device information. Our analytics integration does not send tracker entries, photos, account details, or URL query strings.",
       "Deleting the app's site data erases everything permanently.",
     ],
   },

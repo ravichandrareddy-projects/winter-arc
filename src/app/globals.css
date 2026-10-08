@@ -75,7 +75,7 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    url("/bg-mountains.png") center top / cover no-repeat,
+    url("/bg-mountains.webp") center top / cover no-repeat,
     var(--background);
   overflow: hidden;
 }
@@ -274,4 +274,3 @@ body {
 .animate-ray-sweep {
   animation: ray-sweep 20s linear infinite;
 }
-

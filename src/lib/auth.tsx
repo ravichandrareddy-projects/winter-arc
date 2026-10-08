@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "./supabase/client";
@@ -24,9 +25,13 @@ import {
   type AuthStatus,
   type PendingAction,
 } from "./auth-guard";
-import { AuthModal } from "@/components/AuthModal";
 import { setHasSeenIntro } from "./intro-storage";
 import { safeInternalPath } from "./navigation";
+
+const AuthModal = dynamic(
+  () => import("@/components/AuthModal").then((module) => module.AuthModal),
+  { ssr: false }
+);
 
 export type { AuthStatus };
 

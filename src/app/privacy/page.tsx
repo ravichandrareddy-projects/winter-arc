@@ -60,15 +60,15 @@ export default function PrivacyPage() {
                 <Database className="h-4 w-4 text-accent" /> Local-First Architecture
               </div>
               <p className="text-xs text-muted">
-                Guest mode runs 100% on your device. Nothing leaves your browser unless you create an account to sync.
+                Guest tracking records stay on your device. Creating an account enables sync; optional site analytics is described below.
               </p>
             </div>
             <div className="rounded-2xl border border-border bg-card/70 p-4">
               <div className="flex items-center gap-2 text-foreground font-bold mb-1">
-                <EyeOff className="h-4 w-4 text-accent" /> Zero Third-Party Tracking
+                <EyeOff className="h-4 w-4 text-accent" /> No Sale of Tracking Records
               </div>
               <p className="text-xs text-muted">
-                We do not sell, rent, or monetize your personal fitness, sleep, or photo data to advertising brokers.
+                We do not sell, rent, or monetize your personal fitness, sleep, habit, or photo data to advertising brokers.
               </p>
             </div>
           </div>
@@ -89,6 +89,9 @@ export default function PrivacyPage() {
               </li>
               <li>
                 <strong className="text-foreground">Body Progress Photos:</strong> Photos uploaded to the physique tracker are encrypted in transit and stored privately under your authenticated user ID. They are never published publicly.
+              </li>
+              <li>
+                <strong className="text-foreground">Optional Site Analytics:</strong> When configured, Google Analytics 4 receives page views and may use cookies and browser/device information to measure visits. Our integration does not send tracker entries, meals, sleep records, progress photos, account details, or URL query strings/fragments. Advertising personalization and Google Signals are disabled in the integration. Analytics is disabled when no measurement ID is configured.
               </li>
             </ul>
           </section>

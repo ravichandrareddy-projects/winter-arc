@@ -3,6 +3,7 @@ import { Outfit, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/lib/auth";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const outfit = Outfit({
   variable: "--font-geist-sans",
@@ -220,6 +221,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </AuthProvider>
         </ThemeProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );

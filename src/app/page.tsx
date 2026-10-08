@@ -1,13 +1,22 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import LandingPage from "@/components/landing/LandingPage";
-import { HomeDashboard } from "@/components/home/HomeDashboard";
 import { getHasSeenIntro, subscribeIntroState } from "@/lib/intro-storage";
 import { useAuth } from "@/lib/auth";
 import { useWinterArc } from "@/lib/store";
 import { isStartTab } from "@/lib/navigation";
+
+const HomeDashboard = dynamic(
+  () => import("@/components/home/HomeDashboard").then((module) => module.HomeDashboard),
+  {
+    loading: () => (
+      <main className="min-h-dvh bg-background" aria-label="Loading dashboard" />
+    ),
+  }
+);
 
 let entryRouteHandled = false;
 

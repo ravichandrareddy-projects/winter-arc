@@ -33,7 +33,6 @@ export function PromoVideo() {
               src="/video-assets/winter-arc-ad-poster.png"
               alt="Winter Arc challenge preview"
               fill
-              unoptimized
               sizes="(max-width: 896px) 100vw, 896px"
               className="object-cover opacity-90 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
             />

@@ -9,9 +9,8 @@ export function WinterArcLogo({ className }: { className?: string }) {
         src="/logo.png"
         alt="Winter Arc"
         fill
-        sizes="128px"
+        sizes="64px"
         className="object-contain"
-        priority
       />
     </span>
   );

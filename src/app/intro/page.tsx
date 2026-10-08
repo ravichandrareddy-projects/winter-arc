@@ -76,7 +76,7 @@ const MODULE_GUIDES = [
     tag: "Recovery",
     icon: Moon,
     color: "#818cf8",
-    img: "/video-assets/real/04_sleep.png",
+    img: "/video-assets/real/04_sleep.webp",
     stat: "8.2 hrs",
     statDesc: "Average deep sleep target window",
     how: "Log your bedtime and morning wake time. Review average bedtime, earliest and latest times, schedule consistency, and sleep duration trends.",
@@ -87,7 +87,7 @@ const MODULE_GUIDES = [
     tag: "Circadian",
     icon: Sun,
     color: "#fbbf24",
-    img: "/video-assets/real/05_wake_up.png",
+    img: "/video-assets/real/05_wake_up.webp",
     stat: "05:30 AM",
     statDesc: "Fixed sunrise wake-up lock-in",
     how: "Hit the morning check-in to confirm your rise time without snooze excuses. Lock in sunrise mental clarity.",
@@ -98,7 +98,7 @@ const MODULE_GUIDES = [
     tag: "Hypertrophy",
     icon: Dumbbell,
     color: "#34d399",
-    img: "/video-assets/real/06_fitness.png",
+    img: "/video-assets/real/06_fitness.webp",
     stat: "100%",
     statDesc: "Workout compliance milestone",
     how: "Check off your daily lifts, track reps and weights, log daily steps, and record physique milestone photos securely.",
@@ -109,7 +109,7 @@ const MODULE_GUIDES = [
     tag: "Metabolic",
     icon: UtensilsCrossed,
     color: "#f97316",
-    img: "/video-assets/real/07_food.png",
+    img: "/video-assets/real/07_food.webp",
     stat: "160g",
     statDesc: "Daily protein target intake",
     how: "Log breakfast, lunch, and dinner to stay in your calorie and protein targets with zero guesswork.",
@@ -120,7 +120,7 @@ const MODULE_GUIDES = [
     tag: "Intelligence",
     icon: TrendingUp,
     color: "#2e9bff",
-    img: "/video-assets/real/08_progress.png",
+    img: "/video-assets/real/08_progress.webp",
     stat: "+34%",
     statDesc: "Weekly consistency trajectory",
     how: "Visit the Progress tab to inspect habit completion heatmaps, weekly consistency, and sleep, wake-up, steps, and weight trends across your arc.",
@@ -298,7 +298,7 @@ export default function IntroOnboardingPage() {
           <div className="relative z-10 mx-auto w-full max-w-[340px] sm:max-w-[420px] md:max-w-[460px] aspect-square rounded-[36px] overflow-hidden p-1 shadow-[0_0_80px_rgba(46,155,255,0.35)] animate-pulse-glow">
             <div className="relative h-full w-full rounded-[34px] overflow-hidden border border-white/20 bg-black/80">
               <Image
-                src="/winter-arc-hero-art.png"
+                src="/winter-arc-hero-art.webp"
                 alt="Winter Arc Official Master Artwork"
                 fill
                 priority
@@ -434,7 +434,6 @@ export default function IntroOnboardingPage() {
                 src={MODULE_GUIDES[activeModule].img}
                 alt={MODULE_GUIDES[activeModule].title}
                 fill
-                unoptimized
                 className="object-cover object-top transition duration-500 hover:scale-103"
               />
             </div>
